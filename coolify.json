@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "docker-compose",
   "repository": "https://github.com/v4mpire/TraceLens.git",
-  "branch": "master",
+  "branch": "main",
   "buildCommand": "npm run build",
   "dockerComposeFile": "docker/production/docker-compose.yaml",
   "environmentFile": ".env.production",
