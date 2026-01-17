@@ -6,7 +6,7 @@
   "repository": "https://github.com/v4mpire/TraceLens.git",
   "branch": "master",
   "buildCommand": "npm run build",
-  "dockerComposeFile": "docker/production/docker-compose.yml",
+  "dockerComposeFile": "docker/production/docker-compose.yaml",
   "environmentFile": ".env.production",
   "domains": [
     {
