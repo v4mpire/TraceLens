@@ -4,8 +4,8 @@ FROM node:18-alpine AS production
 WORKDIR /app
 
 # Copy built application (pre-built locally)
-COPY ../../packages/security-scanner/dist ./dist
-COPY ../../packages/security-scanner/package.json ./
+COPY packages/security-scanner/dist ./dist
+COPY packages/security-scanner/package.json ./
 
 # Install only production dependencies
 RUN npm ci --omit=dev

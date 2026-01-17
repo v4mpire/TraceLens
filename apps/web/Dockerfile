@@ -7,9 +7,9 @@ WORKDIR /app
 RUN apk add --no-cache curl
 
 # Copy built application (pre-built locally)
-COPY ../../apps/web/.next/standalone ./
-COPY ../../apps/web/.next/static ./.next/static
-COPY ../../apps/web/public ./public
+COPY apps/web/.next/standalone ./
+COPY apps/web/.next/static ./.next/static
+COPY apps/web/public ./public
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \

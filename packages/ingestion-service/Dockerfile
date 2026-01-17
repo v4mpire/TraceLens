@@ -7,8 +7,8 @@ WORKDIR /app
 RUN apk add --no-cache curl
 
 # Copy built application (pre-built locally)
-COPY ../../packages/ingestion-service/dist ./dist
-COPY ../../packages/ingestion-service/package.json ./
+COPY packages/ingestion-service/dist ./dist
+COPY packages/ingestion-service/package.json ./
 
 # Install only production dependencies
 RUN npm ci --omit=dev
