@@ -1,0 +1,30 @@
+{
+  "name": "tracelens",
+  "version": "0.1.0",
+  "description": "Runtime Truth Engine for Web Applications",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "tools/*"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "clean": "turbo clean",
+    "type-check": "turbo type-check"
+  },
+  "devDependencies": {
+    "turbo": "^1.10.0",
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  },
+  "packageManager": "npm@9.0.0",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
