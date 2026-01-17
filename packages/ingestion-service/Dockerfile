@@ -17,8 +17,8 @@ COPY packages/shared ./packages/shared
 COPY packages/ingestion-service ./packages/ingestion-service
 
 # Build the application
-RUN cd packages/shared && npm run build
-RUN cd packages/ingestion-service && npm run build
+RUN npx tsc --build packages/shared
+RUN npx tsc --build packages/ingestion-service
 
 # Production stage
 FROM node:18-alpine AS production
