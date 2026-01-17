@@ -17,7 +17,7 @@
   "dependencies": {
     "@tracelens/shared": "file:../shared",
     "@tracelens/analysis-engine": "file:../analysis-engine",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^2.7.0"
   },
   "devDependencies": {
     "@tracelens/eslint-config": "file:../../tools/eslint-config",

@@ -6,9 +6,10 @@ WORKDIR /app
 # Install curl for health checks
 RUN apk add --no-cache curl
 
-# Copy built application (pre-built locally)
+# Copy built application and shared dependencies
 COPY packages/ingestion-service/dist ./dist
 COPY packages/ingestion-service/package.json ./
+COPY packages/shared/dist ./node_modules/@tracelens/shared
 
 # Install only production dependencies
 RUN npm install --production
