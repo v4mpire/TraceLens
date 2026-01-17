@@ -17,7 +17,8 @@ COPY packages/shared ./packages/shared
 COPY packages/security-scanner ./packages/security-scanner
 
 # Build the application
-RUN npm run build
+RUN cd packages/shared && npm run build
+RUN cd packages/security-scanner && npm run build
 
 # Production stage
 FROM node:18-alpine AS production

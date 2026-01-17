@@ -17,7 +17,8 @@ COPY packages/shared ./packages/shared
 COPY packages/analysis-engine ./packages/analysis-engine
 
 # Build the application
-RUN npm run build
+RUN cd packages/shared && npm run build
+RUN cd packages/analysis-engine && npm run build
 
 # Production stage
 FROM node:18-alpine AS production
