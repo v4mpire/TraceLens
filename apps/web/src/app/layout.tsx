@@ -1,4 +1,5 @@
 import './globals.css'
+import { ThemeProvider } from '../components/theme-provider'
 
 export const metadata = {
   title: 'TraceLens Dashboard',
@@ -11,8 +12,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className="bg-gray-50">{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className="min-h-screen bg-background font-sans antialiased">
+        <ThemeProvider
+          defaultTheme="system"
+          storageKey="tracelens-ui-theme"
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   )
 }

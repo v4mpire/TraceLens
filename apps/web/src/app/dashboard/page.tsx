@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Clock, TrendingUp, Shield, AlertTriangle } from 'lucide-react';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import Card from '../../components/ui/Card';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
@@ -56,50 +57,91 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-2">Runtime performance and dependency analysis</p>
+        {/* Header */}
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <p className="text-muted-foreground">
+            Runtime performance and dependency analysis overview
+          </p>
         </div>
 
         {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card>
-            <div className="text-2xl font-bold text-blue-600">156ms</div>
-            <div className="text-sm text-gray-600">Avg Response Time</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="relative overflow-hidden">
+            <div className="flex items-center space-x-2">
+              <Clock className="h-5 w-5 text-primary" />
+              <div className="text-sm font-medium text-muted-foreground">Avg Response Time</div>
+            </div>
+            <div className="text-2xl font-bold mt-2">156ms</div>
+            <div className="text-xs text-muted-foreground mt-1">
+              <span className="text-green-600">↓ 12ms</span> from last hour
+            </div>
           </Card>
-          <Card>
-            <div className="text-2xl font-bold text-green-600">99.2%</div>
-            <div className="text-sm text-gray-600">Uptime</div>
+
+          <Card className="relative overflow-hidden">
+            <div className="flex items-center space-x-2">
+              <TrendingUp className="h-5 w-5 text-green-600" />
+              <div className="text-sm font-medium text-muted-foreground">Uptime</div>
+            </div>
+            <div className="text-2xl font-bold mt-2">99.2%</div>
+            <div className="text-xs text-muted-foreground mt-1">
+              <span className="text-green-600">↑ 0.1%</span> from yesterday
+            </div>
           </Card>
-          <Card>
-            <div className="text-2xl font-bold text-orange-600">3</div>
-            <div className="text-sm text-gray-600">Critical Path Nodes</div>
+
+          <Card className="relative overflow-hidden">
+            <div className="flex items-center space-x-2">
+              <AlertTriangle className="h-5 w-5 text-orange-600" />
+              <div className="text-sm font-medium text-muted-foreground">Critical Path Nodes</div>
+            </div>
+            <div className="text-2xl font-bold mt-2">3</div>
+            <div className="text-xs text-muted-foreground mt-1">
+              Requires optimization
+            </div>
           </Card>
-          <Card>
-            <div className="text-2xl font-bold text-red-600">2</div>
-            <div className="text-sm text-gray-600">Active Security Risks</div>
+
+          <Card className="relative overflow-hidden">
+            <div className="flex items-center space-x-2">
+              <Shield className="h-5 w-5 text-red-600" />
+              <div className="text-sm font-medium text-muted-foreground">Security Risks</div>
+            </div>
+            <div className="text-2xl font-bold mt-2">2</div>
+            <div className="text-xs text-muted-foreground mt-1">
+              <span className="text-red-600">High priority</span> vulnerabilities
+            </div>
           </Card>
         </div>
 
-        {/* Dependency Graph */}
-        <Card title="Dependency Graph">
-          <DependencyGraph 
-            nodes={sampleNodes} 
-            links={sampleLinks}
-            width={800}
-            height={400}
-          />
-        </Card>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Dependency Graph */}
+          <Card 
+            title="Dependency Graph" 
+            description="Real-time visualization of service dependencies and critical paths"
+            className="lg:col-span-2"
+          >
+            <DependencyGraph 
+              nodes={sampleNodes} 
+              links={sampleLinks}
+              width={800}
+              height={400}
+            />
+          </Card>
 
-        {/* Performance Chart */}
-        <Card title="Performance Metrics">
-          <PerformanceChart 
-            data={samplePerformanceData}
-            metric="Response Time (ms)"
-            width={800}
-            height={300}
-          />
-        </Card>
+          {/* Performance Chart */}
+          <Card 
+            title="Performance Metrics" 
+            description="Response time trends and threshold monitoring"
+            className="lg:col-span-2"
+          >
+            <PerformanceChart 
+              data={samplePerformanceData}
+              metric="Response Time (ms)"
+              width={800}
+              height={300}
+            />
+          </Card>
+        </div>
       </div>
     </DashboardLayout>
   );
