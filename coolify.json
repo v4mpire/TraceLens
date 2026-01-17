@@ -1,0 +1,96 @@
+{
+  "name": "tracelens",
+  "description": "Runtime Truth Engine for Web Applications",
+  "version": "1.0.0",
+  "type": "docker-compose",
+  "repository": "https://github.com/v4mpire/TraceLens.git",
+  "branch": "master",
+  "buildCommand": "npm run build",
+  "dockerComposeFile": "docker/production/docker-compose.yml",
+  "environmentFile": ".env.production",
+  "domains": [
+    {
+      "domain": "tracelens.yourdomain.com",
+      "port": 80
+    }
+  ],
+  "services": {
+    "web": {
+      "name": "TraceLens Dashboard",
+      "port": 3000,
+      "healthCheck": "/api/health"
+    },
+    "ingestion": {
+      "name": "Ingestion API",
+      "port": 3001,
+      "healthCheck": "/api/health"
+    },
+    "analysis": {
+      "name": "Analysis Engine",
+      "port": 3003,
+      "healthCheck": "/health"
+    },
+    "security": {
+      "name": "Security Scanner",
+      "port": 3004,
+      "healthCheck": "/health"
+    },
+    "nginx": {
+      "name": "Reverse Proxy",
+      "port": 80,
+      "healthCheck": "/health"
+    }
+  },
+  "volumes": [
+    {
+      "name": "postgres_data",
+      "path": "/var/lib/postgresql/data"
+    },
+    {
+      "name": "redis_data",
+      "path": "/data"
+    }
+  ],
+  "environmentVariables": [
+    {
+      "key": "POSTGRES_PASSWORD",
+      "description": "PostgreSQL database password",
+      "required": true,
+      "secret": true
+    },
+    {
+      "key": "API_KEY_SECRET",
+      "description": "Secret for API key generation",
+      "required": true,
+      "secret": true
+    },
+    {
+      "key": "NVD_API_KEY",
+      "description": "National Vulnerability Database API key",
+      "required": false,
+      "secret": true
+    }
+  ],
+  "resources": {
+    "cpu": "2",
+    "memory": "4Gi",
+    "storage": "20Gi"
+  },
+  "scaling": {
+    "minReplicas": 1,
+    "maxReplicas": 3,
+    "targetCPU": 70
+  },
+  "monitoring": {
+    "enabled": true,
+    "healthChecks": true,
+    "logs": true,
+    "metrics": true
+  },
+  "backup": {
+    "enabled": true,
+    "schedule": "0 2 * * *",
+    "retention": "7d",
+    "volumes": ["postgres_data"]
+  }
+}

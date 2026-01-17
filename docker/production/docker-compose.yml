@@ -1,0 +1,141 @@
+version: '3.8'
+
+services:
+  # Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: tracelens
+      POSTGRES_USER: tracelens
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tracelens"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Ingestion Service
+  ingestion:
+    build:
+      context: ../../
+      dockerfile: packages/ingestion-service/Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      POSTGRES_URL: postgresql://tracelens:${POSTGRES_PASSWORD}@postgres:5432/tracelens
+      REDIS_URL: redis://redis:6379
+      API_KEY_SECRET: ${API_KEY_SECRET}
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Analysis Engine
+  analysis:
+    build:
+      context: ../../
+      dockerfile: packages/analysis-engine/Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: 3003
+      POSTGRES_URL: postgresql://tracelens:${POSTGRES_PASSWORD}@postgres:5432/tracelens
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "3003:3003"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Security Scanner
+  security:
+    build:
+      context: ../../
+      dockerfile: packages/security-scanner/Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: 3004
+      POSTGRES_URL: postgresql://tracelens:${POSTGRES_PASSWORD}@postgres:5432/tracelens
+      REDIS_URL: redis://redis:6379
+      NVD_API_KEY: ${NVD_API_KEY}
+    ports:
+      - "3004:3004"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Web Dashboard
+  web:
+    build:
+      context: ../../
+      dockerfile: apps/web/Dockerfile
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://nginx/api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - ingestion
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - web
+      - ingestion
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+  redis_data:

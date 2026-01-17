@@ -1,0 +1,11 @@
+{
+  "name": "@tracelens/tsconfig",
+  "version": "0.1.0",
+  "description": "Shared TypeScript configurations for TraceLens",
+  "main": "index.js",
+  "files": [
+    "base.json",
+    "nextjs.json",
+    "node.json"
+  ]
+}

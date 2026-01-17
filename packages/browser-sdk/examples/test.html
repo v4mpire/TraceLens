@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraceLens Browser SDK Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .metrics {
+            background: #f5f5f5;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .large-content {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <h1>TraceLens Browser SDK Integration Test</h1>
+    
+    <div class="test-section">
+        <h2>SDK Status</h2>
+        <p>SDK Version: <span id="sdk-version">Loading...</span></p>
+        <p>Initialization Time: <span id="init-time">Measuring...</span></p>
+        <p>Current Metrics: <span id="metrics-count">0</span></p>
+    </div>
+
+    <div class="test-section">
+        <h2>Performance Tests</h2>
+        <button onclick="triggerLongTask()">Trigger Long Task (500ms)</button>
+        <button onclick="triggerError()">Trigger JavaScript Error</button>
+        <button onclick="loadResource()">Load External Resource</button>
+        <button onclick="simulateInteraction()">Simulate User Interaction</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Layout Shift Test</h2>
+        <button onclick="triggerLayoutShift()">Trigger Layout Shift</button>
+        <div id="shifting-content" style="height: 100px; background: #e0e0e0; margin: 10px 0;">
+            Content that will shift
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Current Web Vitals</h2>
+        <div id="web-vitals" class="metrics">Loading metrics...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Event Log</h2>
+        <div id="event-log" class="metrics">Waiting for events...</div>
+    </div>
+
+    <!-- Large content to trigger LCP -->
+    <div class="large-content">
+        Large Contentful Paint Element
+    </div>
+
+    <!-- TraceLens SDK -->
+    <script type="module">
+        // Measure initialization time
+        const initStart = performance.now();
+        
+        // Import and initialize TraceLens SDK
+        import { autoInstrument } from '../dist/index.js';
+        
+        const sdk = autoInstrument({
+            projectKey: 'test-project-key',
+            endpoint: 'https://httpbin.org/post', // Test endpoint
+            sampling: 1.0,
+            debug: true,
+            autoStart: true
+        });
+
+        const initTime = performance.now() - initStart;
+        document.getElementById('init-time').textContent = `${initTime.toFixed(2)}ms`;
+        document.getElementById('sdk-version').textContent = window.TraceLens?.version || '0.1.0';
+
+        // Update metrics display
+        function updateMetrics() {
+            const metrics = sdk.getMetrics();
+            document.getElementById('web-vitals').textContent = JSON.stringify(metrics, null, 2);
+            
+            const metricsCount = Object.keys(metrics).length;
+            document.getElementById('metrics-count').textContent = metricsCount;
+        }
+
+        // Event logging
+        let eventCount = 0;
+        const eventLog = document.getElementById('event-log');
+        
+        function logEvent(message) {
+            eventCount++;
+            const timestamp = new Date().toLocaleTimeString();
+            eventLog.textContent += `[${timestamp}] ${message}\n`;
+            eventLog.scrollTop = eventLog.scrollHeight;
+        }
+
+        // Test functions
+        window.triggerLongTask = function() {
+            logEvent('Starting long task...');
+            const start = performance.now();
+            
+            // Simulate 500ms blocking task
+            while (performance.now() - start < 500) {
+                // Busy wait
+            }
+            
+            logEvent('Long task completed');
+            sdk.track('manual-long-task', { duration: 500 });
+        };
+
+        window.triggerError = function() {
+            logEvent('Triggering JavaScript error...');
+            try {
+                // This will throw an error
+                nonExistentFunction();
+            } catch (error) {
+                logEvent(`Error caught: ${error.message}`);
+            }
+        };
+
+        window.loadResource = function() {
+            logEvent('Loading external resource...');
+            const img = new Image();
+            img.onload = () => logEvent('Resource loaded successfully');
+            img.onerror = () => logEvent('Resource failed to load');
+            img.src = `https://picsum.photos/200/200?random=${Date.now()}`;
+        };
+
+        window.simulateInteraction = function() {
+            logEvent('Simulating user interaction...');
+            
+            // Simulate click with processing delay
+            const button = event.target;
+            const start = performance.now();
+            
+            setTimeout(() => {
+                const processingTime = performance.now() - start;
+                logEvent(`Interaction processed in ${processingTime.toFixed(2)}ms`);
+                sdk.track('user-interaction', { 
+                    type: 'click',
+                    processingTime: processingTime 
+                });
+            }, 50); // 50ms processing delay
+        };
+
+        window.triggerLayoutShift = function() {
+            logEvent('Triggering layout shift...');
+            const content = document.getElementById('shifting-content');
+            
+            // Add content that will cause layout shift
+            const newElement = document.createElement('div');
+            newElement.style.height = '100px';
+            newElement.style.background = '#ff6b6b';
+            newElement.textContent = 'New content causing layout shift';
+            
+            content.parentNode.insertBefore(newElement, content);
+            
+            logEvent('Layout shift triggered');
+        };
+
+        // Update metrics every 2 seconds
+        setInterval(updateMetrics, 2000);
+        updateMetrics();
+
+        // Log SDK events
+        logEvent('TraceLens SDK initialized and started');
+        
+        // Performance monitoring
+        const observer = new PerformanceObserver((list) => {
+            const entries = list.getEntries();
+            entries.forEach(entry => {
+                if (entry.entryType === 'measure' && entry.name.includes('tracelens')) {
+                    logEvent(`SDK operation: ${entry.name} took ${entry.duration.toFixed(2)}ms`);
+                }
+            });
+        });
+        
+        try {
+            observer.observe({ entryTypes: ['measure'] });
+        } catch (error) {
+            logEvent('Performance observer not supported');
+        }
+    </script>
+</body>
+</html>

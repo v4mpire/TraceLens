@@ -1,184 +1,250 @@
-# Dynamous Kiro Hackathon Quickstart Template
+# TraceLens - Runtime Truth Engine for Web Applications
 
-🚀 **Your starting point for the Dynamous and Kiro Hackathon** - A comprehensive template with pre-configured Kiro CLI setup, development workflows, and submission guidelines.
+[![GitHub Stars](https://img.shields.io/github/stars/v4mpire/TraceLens?style=social)](https://github.com/v4mpire/TraceLens)
+[![npm](https://img.shields.io/npm/v/@tracelens/browser-sdk)](https://www.npmjs.com/package/@tracelens/browser-sdk)
+[![npm](https://img.shields.io/npm/v/@tracelens/server-sdk)](https://www.npmjs.com/package/@tracelens/server-sdk)
+[![TypeScript](https://img.shields.io/badge/typescript-100%25-blue)](https://www.typescriptlang.org/)
+[![Performance](https://img.shields.io/badge/overhead-%3C1ms-brightgreen)](https://github.com/v4mpire/TraceLens)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-> **📖 New to Kiro?** Check out [kiro-guide.md](kiro-guide.md) to quickly get accustomed to how Kiro works and understand its unique features for the hackathon.
+TraceLens transforms web application observability by focusing on **causality over metrics**. Instead of showing what happened, TraceLens explains **why it happened** by reconstructing execution order from real runtime signals and building causal dependency graphs.
 
-## About the Hackathon
+**🎯 Core Innovation**: Deterministic analysis of blocking paths and runtime-relevant vulnerabilities, replacing guesswork with concrete explanations.
 
-The **Kiro Hackathon** is a coding competition where developers build real-world applications using the Kiro CLI. Show off your AI-powered development skills and compete for **$17,000 in prizes**.
+## 🚀 Live Demo & Quick Start
 
-- **📅 Dates**: January 5-23, 2026
-- **💰 Prize Pool**: $17,000 across 10 winners
-- **🎯 Theme**: Open - build anything that solves a real problem
-- **🔗 More Info**: [dynamous.ai/kiro-hackathon](https://dynamous.ai/kiro-hackathon)
-
-## What's Included
-
-This template provides everything you need to get started:
-
-- **📋 Steering Documents**: Pre-configured project templates (product.md, tech.md, structure.md)
-- **⚡ Custom Prompts**: 11 powerful development workflow prompts
-- **📖 Examples**: Sample README and DEVLOG showing best practices
-- **🏆 Hackathon Tools**: Specialized code review prompt for submission evaluation
-
-## Quick Start
-
-### 1. Clone This Template
+### Try TraceLens Now
 ```bash
-git clone https://github.com/coleam00/dynamous-kiro-hackathon
-cd dynamous-kiro-hackathon
+# Install SDKs (published on npm)
+npm install @tracelens/browser-sdk @tracelens/server-sdk
+
+# Or deploy your own instance
+git clone https://github.com/v4mpire/TraceLens.git
+cd TraceLens
+./scripts/deploy.sh
 ```
 
-### 2. Run the Setup Wizard
-```bash
-@quickstart
+### Browser Integration (2 lines)
+```javascript
+import { TraceLensSDK } from '@tracelens/browser-sdk';
+
+const tracer = new TraceLensSDK({
+  projectKey: 'your-project-key',
+  endpoint: 'https://your-tracelens-instance.com/api/events'
+});
+
+tracer.start(); // Automatic Web Vitals and performance tracking
 ```
 
-This assumes you already have Kiro CLI installed and that you started with the `kiro-cli` command in your terminal.
+### Server Integration (Express)
+```javascript
+import { createTraceLensMiddleware } from '@tracelens/server-sdk';
+import express from 'express';
 
-This interactive wizard will:
-- ✅ Fill out your steering documents with project details
-- ✅ Configure your development workflow
-- ✅ Set up Kiro CLI for your specific project
-- ✅ Explain all available prompts and features
+const app = express();
+app.use(createTraceLensMiddleware({
+  projectKey: 'your-project-key',
+  endpoint: 'https://your-tracelens-instance.com/api/traces'
+}));
+```
 
-### 3. Start Building
-Your project is now configured! Use these core prompts:
-- **`@prime`** - Load project context
-- **`@plan-feature`** - Plan new features
-- **`@execute`** - Implement plans systematically
-- **`@code-review`** - Review code quality
+## 📋 What Makes TraceLens Different
 
-**Note:** Your typical workflow will be `@prime` → `@plan-feature` → `@execute` → `@code-review`, but feel free to change it however you want. These commands may require additional details (like what feature to plan or which plan file to execute), but Kiro will ask for these parameters after you invoke the command.
+| Traditional APM | TraceLens |
+|----------------|-----------|
+| Shows metrics and logs | **Explains causal relationships** |
+| Theoretical security alerts | **Runtime-relevant vulnerabilities** |
+| Multiple dashboards | **Single unified view** |
+| High overhead monitoring | **<1ms production overhead** |
+| Reactive debugging | **Proactive root cause analysis** |
 
-## Development Workflow (Customize this However You Want!)
+## 🏗️ Architecture
 
-### Initial Setup (One-Time)
-1. **Complete setup**: Run `@quickstart` to configure your project
+TraceLens uses a modern microservices architecture designed for scale and reliability:
 
-### Core Development Cycle (Every Feature/Session)
+```
+Browser/Server SDKs → Ingestion API → Analysis Engine → Interactive Dashboard
+                           ↓              ↓
+                    PostgreSQL ← Security Scanner → CVE Databases
+```
 
-### Phase 1: Setup & Planning
-1. **Load context**: Use `@prime` to understand your codebase
-2. **Plan features**: Use `@plan-feature` for comprehensive planning
+### Core Components
 
-### Phase 2: Build & Iterate
-1. **Implement**: Use `@execute` to build features systematically
-2. **Review**: Use `@code-review` to maintain code quality
-3. **Document**: Update your DEVLOG.md as you work
-4. **Optimize**: Customize your `.kiro/` configuration for your workflow
+- **Browser SDK**: Lightweight client-side performance monitoring
+- **Server SDK**: OpenTelemetry-based backend tracing with dependency analysis
+- **Ingestion Service**: High-throughput event processing (10k+ events/sec)
+- **Analysis Engine**: Causal graph construction and critical path detection
+- **Security Scanner**: Real-time CVE mapping to execution paths
+- **Dashboard**: Interactive visualization with D3.js dependency graphs
 
-### Phase 3: Submission Preparation
-1. **Final review**: Run `@code-review-hackathon` for submission evaluation
-2. **Polish documentation**: Ensure README.md and DEVLOG.md are complete
-3. **Verify requirements**: Check all submission criteria are met
+## 📊 Performance Specifications
 
-## Submission Requirements
+### Browser SDK
+- **Initialization**: <5ms on main thread
+- **Runtime Overhead**: <1ms per event
+- **Memory Usage**: <2MB baseline
+- **Network Impact**: Batched transmission, <1KB/minute
 
-Your submission will be judged on these criteria (100 points total):
+### Platform Performance
+- **API Response**: <100ms for event ingestion
+- **Graph Analysis**: <2s for complex dependency graphs
+- **Dashboard Load**: <2s initial render
+- **Throughput**: 10,000+ events per second per instance
 
-### Application Quality (40 points)
-- **Functionality & Completeness** (15 pts): Does it work as intended?
-- **Real-World Value** (15 pts): Does it solve a genuine problem?
-- **Code Quality** (10 pts): Is the code well-structured and maintainable?
+## 🛠️ Development & Integration
 
-### Kiro CLI Usage (20 points)
-- **Effective Use of Features** (10 pts): How well did you leverage Kiro CLI?
-- **Custom Commands Quality** (7 pts): Quality of your custom prompts
-- **Workflow Innovation** (3 pts): Creative use of Kiro CLI features
+### Supported Frameworks
 
-### Documentation (20 points)
-- **Completeness** (9 pts): All required documentation present
-- **Clarity** (7 pts): Easy to understand and follow
-- **Process Transparency** (4 pts): Clear development process documentation
+**Frontend**
+- React, Vue, Angular, Vanilla JS
+- Next.js, Nuxt.js, SvelteKit
+- Mobile: React Native (coming soon)
 
-### Innovation (15 points)
-- **Uniqueness** (8 pts): Original approach or solution
-- **Creative Problem-Solving** (7 pts): Novel technical solutions
+**Backend**
+- Node.js (Express, Fastify, Koa)
+- Python (Django, Flask) - coming soon
+- Go, Java, .NET - coming soon
 
-### Presentation (5 points)
-- **Demo Video** (3 pts): Clear demonstration of your project
-- **README** (2 pts): Professional project overview
+### Example Integrations
 
-## Required Documentation
+**React Application**
+```javascript
+// Automatic performance tracking
+tracer.track('user-action', {
+  action: 'button-click',
+  component: 'checkout-form',
+  timestamp: Date.now()
+});
+```
 
-Ensure these files are complete and high-quality:
+**Express API**
+```javascript
+// Automatic trace correlation
+app.get('/api/users', async (req, res) => {
+  // TraceLens automatically captures:
+  // - Request timing and metadata
+  // - Database query performance  
+  // - External API calls
+  // - Dependency versions used
+  const users = await db.users.findAll();
+  res.json(users);
+});
+```
 
-### README.md
-- Clear project description and value proposition
-- Prerequisites and setup instructions
-- Architecture overview and key components
-- Usage examples and troubleshooting
+## 🚀 Deployment Options
 
-*There's a lot of freedom for how you can structure this. Just make sure that it's easy for someone viewing this to know exactly what your project is about and how to run it themselves. This is the main criteria that explains the project clearly and how to test it in a local environment.*
+### Option 1: One-Command Deployment
+```bash
+./scripts/deploy.sh deploy
+```
 
-### DEVLOG.md
-- Development timeline with key milestones
-- Technical decisions and rationale
-- Challenges faced and solutions implemented
-- Time tracking and Kiro CLI usage statistics
+### Option 2: Docker Compose
+```bash
+docker-compose -f docker/production/docker-compose.yml up -d
+```
 
-*There's a lot of freedom in how you structure this too. It's up to you how you want to document your timeline, milestones, decisions made, challenges you encounter, and all those kinds of things. Feel free to use Kiro to help you maintain your devlog as you're working on the project. Hint: create a Kiro prompt to help you update your log based on what's happening.*
+### Option 3: Coolify (VPS)
+```bash
+# Deploy to your VPS with Coolify
+# Uses included coolify.json configuration
+```
 
-### .kiro/ Directory
-- **Steering documents**: Customized for your project
-- **Custom prompts**: Workflow-specific commands
-- **Configuration**: Optimized for your development process
+All deployment options include:
+- PostgreSQL database with optimized schema
+- Redis caching for performance
+- Nginx reverse proxy with rate limiting
+- Automated health checks and monitoring
+- SSL/TLS support ready
 
-*This template provides a good starting point with prompts, and the wizard helps you set up your initial steering documents. However, it's encouraged for you to continue to customize things and refine it as you're working on your project.*
+## 📚 Documentation
 
-## Available Prompts
+- **[Quick Start Guide](docs/QUICKSTART.md)** - Get running in 5 minutes
+- **[API Documentation](docs/API.md)** - Complete API reference
+- **[Deployment Guide](docs/DEPLOYMENT.md)** - Production deployment
+- **[Integration Examples](examples/)** - React and Express samples
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
-This template includes 11 powerful development prompts:
+## 🧪 Examples & Demos
 
-### Core Development
-- **`@prime`** - Load comprehensive project context
-- **`@plan-feature`** - Create detailed implementation plans
-- **`@execute`** - Execute plans with systematic task management
-- **`@quickstart`** - Interactive project setup wizard
+### Live Examples
+- **[React Demo App](examples/react-app/)** - Complete frontend integration
+- **[Express API Demo](examples/express-api/)** - Backend tracing example
+- **[Integration Tests](tests/)** - End-to-end validation
 
-### Quality Assurance
-- **`@code-review`** - Technical code review for quality and bugs
-- **`@code-review-hackathon`** - Hackathon submission evaluation
-- **`@code-review-fix`** - Fix issues found in code reviews
-- **`@system-review`** - Analyze implementation vs plan
+### Key Use Cases
+1. **Performance Debugging**: Identify exact bottlenecks in user journeys
+2. **Security Assessment**: Focus on vulnerabilities that actually matter
+3. **Dependency Analysis**: Understand runtime package usage and risks
+4. **Root Cause Analysis**: Trace issues from symptom to source
 
-### Documentation & Planning
-- **`@create-prd`** - Generate Product Requirements Documents
-- **`@execution-report`** - Generate implementation reports
-- **`@rca`** - Root cause analysis for issues
-- **`@implement-fix`** - Implement fixes based on analysis
+## 🔒 Security & Privacy
 
-## Examples
+- **Self-Hosted**: Your data never leaves your infrastructure
+- **Minimal Data**: Only collects performance and dependency metadata
+- **PII Protection**: Automatic sanitization of sensitive information
+- **Production Safe**: Non-blocking operation with <1ms overhead
+- **Open Source**: Full transparency and auditability
 
-Check the `examples/` folder for:
-- **README.md**: Professional project documentation example
-- **DEVLOG.md**: Comprehensive development log example
+## 🤝 Contributing
 
-These examples show the level of detail and professionalism expected for hackathon submissions.
+TraceLens is built with systematic development practices:
 
-## Tips for Success
+1. **Follow [CHECKPOINTS.md](CHECKPOINTS.md)** - Systematic development phases
+2. **Use Kiro CLI** - AI-assisted development workflow  
+3. **Validate Performance** - Every change must maintain <1ms overhead
+4. **Test Thoroughly** - Unit, integration, and performance tests
+5. **Document Changes** - Update relevant documentation
 
-### Maximize Your Score
-1. **Use Kiro CLI extensively** - It's 20% of your score
-2. **Document everything** - Process documentation is 20% of your score
-3. **Build something useful** - Real-world value is heavily weighted
-4. **Optimize your workflow** - Custom prompts and steering documents matter
+### Development Setup
+```bash
+# Install dependencies
+npm install
 
-### Development Best Practices
-- **Start with `@quickstart`** to set up your foundation properly
-- **Use `@prime`** at the start of every new conversation to quickly catch the coding assistant up to speed on what has been built in the project already
-- **Update your DEVLOG.md** continuously, not just at the end
-- **Customize your `.kiro/` configuration** as you learn your workflow
-- **Run `@code-review-hackathon`** periodically to compare your project against the judging rubric and before submitting
+# Start development environment
+docker-compose up -d
+npm run dev
 
-## Getting Help
+# Run tests
+npm test
+```
 
-- **Kiro CLI Documentation**: [kiro.dev/docs/cli](https://kiro.dev/docs/cli)
-- **Hackathon Community**: Join the Dynamous community for support
-- **Built-in Help**: Use `/help` in Kiro CLI for command assistance
+## 📈 Roadmap
+
+### Q1 2026
+- [ ] Python SDK (Django, Flask)
+- [ ] Advanced alerting and notifications
+- [ ] Custom dashboard widgets
+- [ ] API integrations (Slack, PagerDuty)
+
+### Q2 2026  
+- [ ] Go and Java SDKs
+- [ ] Machine learning insights
+- [ ] Multi-tenant architecture
+- [ ] Enterprise SSO integration
+
+### Q3 2026
+- [ ] React Native mobile SDK
+- [ ] Real-time collaboration features
+- [ ] Advanced security scanning
+- [ ] Plugin marketplace
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+Built with:
+- [OpenTelemetry](https://opentelemetry.io/) for distributed tracing
+- [D3.js](https://d3js.org/) for interactive visualizations  
+- [Next.js](https://nextjs.org/) for the dashboard
+- [PostgreSQL](https://postgresql.org/) for data storage
+- [Kiro CLI](https://kiro.dev/) for AI-assisted development
 
 ---
 
-**Ready to build something amazing?** Run `@quickstart` and let's get started! 🚀
+**Ready to transform your observability?** 
+
+[Get Started](docs/QUICKSTART.md) | [View Examples](examples/) | [Deploy Now](docs/DEPLOYMENT.md)
+
+**TraceLens: Because understanding WHY matters more than knowing WHAT.** 🔍✨

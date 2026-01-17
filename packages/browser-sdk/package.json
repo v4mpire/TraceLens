@@ -1,0 +1,56 @@
+{
+  "name": "@tracelens/browser-sdk",
+  "version": "1.0.0",
+  "description": "TraceLens Browser SDK - Client-side performance monitoring with <1ms overhead",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src/**/*.ts",
+    "test": "jest",
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "performance",
+    "monitoring",
+    "observability",
+    "web-vitals",
+    "tracing",
+    "analytics",
+    "browser",
+    "frontend"
+  ],
+  "author": "TraceLens Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/v4mpire/TraceLens.git",
+    "directory": "packages/browser-sdk"
+  },
+  "homepage": "https://github.com/username/tracelens#readme",
+  "bugs": {
+    "url": "https://github.com/username/tracelens/issues"
+  },
+  "dependencies": {
+    "@tracelens/shared": "^1.0.0"
+  },
+  "devDependencies": {
+    "@tracelens/eslint-config": "file:../../tools/eslint-config",
+    "@tracelens/tsconfig": "file:../../tools/tsconfig",
+    "typescript": "^5.0.0",
+    "jest": "^29.0.0",
+    "@types/jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
+    "jest-environment-jsdom": "^29.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

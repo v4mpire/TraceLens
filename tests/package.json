@@ -1,0 +1,27 @@
+{
+  "name": "tracelens-integration-tests",
+  "version": "1.0.0",
+  "description": "Integration tests for TraceLens end-to-end functionality",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "test:e2e": "jest tests/e2e",
+    "test:integration": "jest tests/integration",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.0.0",
+    "@types/supertest": "^2.0.0",
+    "jest": "^29.0.0",
+    "supertest": "^6.3.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@tracelens/browser-sdk": "file:./packages/browser-sdk",
+    "@tracelens/server-sdk": "file:./packages/server-sdk",
+    "@tracelens/analysis-engine": "file:./packages/analysis-engine",
+    "express": "^4.18.0"
+  }
+}
