@@ -5,9 +5,9 @@ services:
     image: postgres:15-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: tracelens
-      POSTGRES_USER: tracelens
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tracelens_secure}
+      POSTGRES_DB: ${POSTGRES_DB:-tracelens}
+      POSTGRES_USER: ${POSTGRES_USER:-tracelens}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tl_db_prod_2026_secure_pass_a1b2c3d4e5f6}
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
     ports:
       - "5432:5432"
@@ -52,9 +52,10 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3001
-      DATABASE_URL: postgresql://tracelens:${POSTGRES_PASSWORD:-tracelens_secure}@postgres:5432/tracelens
+      DATABASE_URL: postgresql://${POSTGRES_USER:-tracelens}:${POSTGRES_PASSWORD:-tl_db_prod_2026_secure_pass_a1b2c3d4e5f6}@postgres:5432/${POSTGRES_DB:-tracelens}
       REDIS_URL: redis://redis:6379
       LOG_LEVEL: ${LOG_LEVEL:-info}
+      API_KEY_SECRET: ${API_KEY_SECRET:-tl_prod_2026_secure_api_key_f8d9e7c6b5a4321098765432109876543210}
     depends_on:
       postgres:
         condition: service_healthy
@@ -81,7 +82,8 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      NEXT_PUBLIC_API_URL: ${API_URL:-http://localhost:3001}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-/api}
+      NEXT_PUBLIC_DASHBOARD_URL: ${NEXT_PUBLIC_DASHBOARD_URL:-https://tracelens.thatinsanegirl.com}
       HOSTNAME: "0.0.0.0"
     depends_on:
       ingestion-service:
