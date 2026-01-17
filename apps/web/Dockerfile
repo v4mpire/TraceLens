@@ -16,8 +16,8 @@ RUN npm ci
 COPY packages/shared ./packages/shared
 COPY apps/web ./apps/web
 
-# Build the application
-RUN ./node_modules/.bin/tsc --build packages/shared
+# Build the application (ensure shared is built first)
+RUN cd packages/shared && npx tsc
 RUN cd apps/web && npm run build
 
 # Production stage

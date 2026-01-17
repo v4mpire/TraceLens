@@ -16,9 +16,9 @@ RUN npm ci
 COPY packages/shared ./packages/shared
 COPY packages/ingestion-service ./packages/ingestion-service
 
-# Build the application
-RUN ./node_modules/.bin/tsc --build packages/shared
-RUN ./node_modules/.bin/tsc --build packages/ingestion-service
+# Build the application (ensure shared is built first)
+RUN cd packages/shared && npx tsc
+RUN cd packages/ingestion-service && npx tsc
 
 # Production stage
 FROM node:18-alpine AS production
