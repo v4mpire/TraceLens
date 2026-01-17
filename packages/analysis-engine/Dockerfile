@@ -8,7 +8,7 @@ COPY packages/analysis-engine/dist ./dist
 COPY packages/analysis-engine/package.json ./
 
 # Install only production dependencies
-RUN npm ci
+RUN npm install --production
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \

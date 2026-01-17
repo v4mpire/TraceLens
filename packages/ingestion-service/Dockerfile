@@ -11,7 +11,7 @@ COPY packages/ingestion-service/dist ./dist
 COPY packages/ingestion-service/package.json ./
 
 # Install only production dependencies
-RUN npm ci
+RUN npm install --production
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
