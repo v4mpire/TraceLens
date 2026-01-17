@@ -17,8 +17,8 @@ COPY packages/shared ./packages/shared
 COPY packages/security-scanner ./packages/security-scanner
 
 # Build the application
-RUN npx tsc --build packages/shared
-RUN npx tsc --build packages/security-scanner
+RUN npx typescript --build packages/shared
+RUN npx typescript --build packages/security-scanner
 
 # Production stage
 FROM node:18-alpine AS production

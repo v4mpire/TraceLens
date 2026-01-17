@@ -17,8 +17,8 @@ COPY packages/shared ./packages/shared
 COPY packages/analysis-engine ./packages/analysis-engine
 
 # Build the application
-RUN npx tsc --build packages/shared
-RUN npx tsc --build packages/analysis-engine
+RUN npx typescript --build packages/shared
+RUN npx typescript --build packages/analysis-engine
 
 # Production stage
 FROM node:18-alpine AS production

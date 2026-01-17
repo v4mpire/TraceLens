@@ -17,7 +17,7 @@ COPY packages/shared ./packages/shared
 COPY apps/web ./apps/web
 
 # Build the application
-RUN npx tsc --build packages/shared
+RUN npx typescript --build packages/shared
 RUN cd apps/web && npm run build
 
 # Production stage
