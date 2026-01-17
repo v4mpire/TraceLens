@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  experimental: {
-    appDir: true,
-  },
+  // Force rebuild with cache busting
+  generateBuildId: async () => {
+    return 'modern-ui-' + Date.now()
+  }
 }
 
 module.exports = nextConfig

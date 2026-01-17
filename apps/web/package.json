@@ -1,7 +1,7 @@
 {
   "name": "@tracelens/web",
-  "version": "0.1.0",
-  "description": "TraceLens Dashboard - Next.js web interface",
+  "version": "0.2.0",
+  "description": "TraceLens Dashboard - Next.js web interface with modern UI",
   "private": true,
   "scripts": {
     "build": "next build",
