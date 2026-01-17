@@ -1,22 +1,4 @@
 # Production Dockerfile for Ingestion Service
-FROM node:18-alpine AS builder
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-COPY turbo.json ./
-COPY packages/shared/package.json ./packages/shared/
-COPY packages/ingestion-service/package.json ./packages/ingestion-service/
-
-# Install dependencies
-RUN npm ci
-
-# Copy source code and built files
-COPY packages/shared ./packages/shared
-COPY packages/ingestion-service ./packages/ingestion-service
-
-# Production stage
 FROM node:18-alpine AS production
 
 WORKDIR /app
@@ -24,10 +6,10 @@ WORKDIR /app
 # Install curl for health checks
 RUN apk add --no-cache curl
 
-# Copy built application
-COPY --from=builder /app/packages/ingestion-service/dist ./dist
-COPY --from=builder /app/packages/ingestion-service/package.json ./
-COPY --from=builder /app/node_modules ./node_modules
+# Copy built application (pre-built locally)
+COPY packages/ingestion-service/dist ./dist
+COPY packages/ingestion-service/package.json ./
+COPY node_modules ./node_modules
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
