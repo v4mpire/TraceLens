@@ -1,0 +1,1 @@
+{"version":3,"file":"navigation-timing.d.ts","sourceRoot":"","sources":["../../src/collectors/navigation-timing.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,gBAAgB,EAAE,MAAM,mBAAmB,CAAC;AAErD,qBAAa,yBAAyB;IAC7B,OAAO,IAAI,gBAAgB,GAAG,IAAI;IAuBlC,aAAa,CAAC,QAAQ,EAAE,CAAC,MAAM,EAAE,gBAAgB,KAAK,IAAI,GAAG,IAAI;IAqBjE,WAAW,IAAI,OAAO;CAK9B"}

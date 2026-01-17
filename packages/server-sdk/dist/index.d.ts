@@ -1,0 +1,21 @@
+export { TraceLensServerSDK } from './core/tracer';
+export type { ServerSDKConfig } from './core/tracer';
+export { DependencyScanner } from './core/dependency-scanner';
+export { ExecutionTracker } from './core/execution-tracker';
+export type { ExecutionMetrics, FunctionMetrics } from './core/execution-tracker';
+export { createTraceLensMiddleware } from './middleware/express';
+export type { TraceLensExpressOptions } from './middleware/express';
+export { traced } from './middleware/express';
+export { default as traceLensFastifyPlugin } from './middleware/fastify';
+export type { TraceLensFastifyOptions } from './middleware/fastify';
+export { PackageScanner } from './analyzers/package-scanner';
+export type { PackageAnalysis } from './analyzers/package-scanner';
+export { ImportTracker, globalImportTracker } from './analyzers/import-tracker';
+export type { ImportEvent, ImportMetrics } from './analyzers/import-tracker';
+export { VersionDetector } from './analyzers/version-detector';
+export type { VersionInfo, VersionAnalysis } from './analyzers/version-detector';
+export { TraceContextManager } from './correlation/trace-context';
+export { TraceLensSpanProcessor } from './correlation/span-processor';
+export type { TraceLensSpanData } from './correlation/span-processor';
+export type { TraceSpan, Trace, TraceContext, TracingConfig, DependencySnapshot, RuntimeDependency, PackageDependency } from '@tracelens/shared';
+//# sourceMappingURL=index.d.ts.map
