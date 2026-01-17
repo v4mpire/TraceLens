@@ -7,9 +7,9 @@ WORKDIR /app
 RUN apk add --no-cache curl
 
 # Copy built application (pre-built locally)
-COPY packages/ingestion-service/dist ./dist
-COPY packages/ingestion-service/package.json ./
-COPY node_modules ./node_modules
+COPY ../../packages/ingestion-service/dist ./dist
+COPY ../../packages/ingestion-service/package.json ./
+COPY ../../node_modules ./node_modules
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \

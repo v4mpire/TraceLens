@@ -4,9 +4,9 @@ FROM node:18-alpine AS production
 WORKDIR /app
 
 # Copy built application (pre-built locally)
-COPY packages/security-scanner/dist ./dist
-COPY packages/security-scanner/package.json ./
-COPY node_modules ./node_modules
+COPY ../../packages/security-scanner/dist ./dist
+COPY ../../packages/security-scanner/package.json ./
+COPY ../../node_modules ./node_modules
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \

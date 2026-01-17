@@ -4,9 +4,9 @@ FROM node:18-alpine AS production
 WORKDIR /app
 
 # Copy built application (pre-built locally)
-COPY packages/analysis-engine/dist ./dist
-COPY packages/analysis-engine/package.json ./
-COPY node_modules ./node_modules
+COPY ../../packages/analysis-engine/dist ./dist
+COPY ../../packages/analysis-engine/package.json ./
+COPY ../../node_modules ./node_modules
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
