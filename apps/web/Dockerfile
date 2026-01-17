@@ -12,13 +12,9 @@ COPY apps/web/package.json ./apps/web/
 # Install dependencies
 RUN npm ci
 
-# Copy source code
+# Copy source code and built files
 COPY packages/shared ./packages/shared
 COPY apps/web ./apps/web
-
-# Build the application (ensure shared is built first)
-RUN cd packages/shared && npx tsc
-RUN cd apps/web && npm run build
 
 # Production stage
 FROM node:18-alpine AS production

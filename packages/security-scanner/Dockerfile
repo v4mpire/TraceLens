@@ -12,13 +12,9 @@ COPY packages/security-scanner/package.json ./packages/security-scanner/
 # Install dependencies
 RUN npm ci
 
-# Copy source code
+# Copy source code and built files
 COPY packages/shared ./packages/shared
 COPY packages/security-scanner ./packages/security-scanner
-
-# Build the application (ensure shared is built first)
-RUN cd packages/shared && npx tsc
-RUN cd packages/security-scanner && npx tsc
 
 # Production stage
 FROM node:18-alpine AS production

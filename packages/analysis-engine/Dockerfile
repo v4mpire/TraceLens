@@ -12,13 +12,9 @@ COPY packages/analysis-engine/package.json ./packages/analysis-engine/
 # Install dependencies
 RUN npm ci
 
-# Copy source code
+# Copy source code and built files
 COPY packages/shared ./packages/shared
 COPY packages/analysis-engine ./packages/analysis-engine
-
-# Build the application (ensure shared is built first)
-RUN cd packages/shared && npx tsc
-RUN cd packages/analysis-engine && npx tsc
 
 # Production stage
 FROM node:18-alpine AS production

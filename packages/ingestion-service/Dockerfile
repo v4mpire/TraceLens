@@ -12,13 +12,9 @@ COPY packages/ingestion-service/package.json ./packages/ingestion-service/
 # Install dependencies
 RUN npm ci
 
-# Copy source code
+# Copy source code and built files
 COPY packages/shared ./packages/shared
 COPY packages/ingestion-service ./packages/ingestion-service
-
-# Build the application (ensure shared is built first)
-RUN cd packages/shared && npx tsc
-RUN cd packages/ingestion-service && npx tsc
 
 # Production stage
 FROM node:18-alpine AS production
