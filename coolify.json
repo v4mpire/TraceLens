@@ -6,7 +6,7 @@
   "repository": "https://github.com/v4mpire/TraceLens.git",
   "branch": "main",
   "buildCommand": "npm run build",
-  "dockerComposeFile": "docker/production/docker-compose.yaml",
+  "dockerComposeFile": "docker/production/docker-compose-simple.yaml",
   "environmentFile": ".env.production",
   "domains": [
     {
@@ -18,22 +18,7 @@
     "web": {
       "name": "TraceLens Dashboard",
       "port": 3000,
-      "healthCheck": "/api/health"
-    },
-    "ingestion": {
-      "name": "Ingestion API",
-      "port": 3001,
-      "healthCheck": "/api/health"
-    },
-    "analysis": {
-      "name": "Analysis Engine",
-      "port": 3003,
-      "healthCheck": "/health"
-    },
-    "security": {
-      "name": "Security Scanner",
-      "port": 3004,
-      "healthCheck": "/health"
+      "healthCheck": "/"
     },
     "nginx": {
       "name": "Reverse Proxy",
@@ -41,44 +26,14 @@
       "healthCheck": "/health"
     }
   },
-  "volumes": [
-    {
-      "name": "postgres_data",
-      "path": "/var/lib/postgresql/data"
-    },
-    {
-      "name": "redis_data",
-      "path": "/data"
-    }
-  ],
-  "environmentVariables": [
-    {
-      "key": "POSTGRES_PASSWORD",
-      "description": "PostgreSQL database password",
-      "required": true,
-      "secret": true
-    },
-    {
-      "key": "API_KEY_SECRET",
-      "description": "Secret for API key generation",
-      "required": true,
-      "secret": true
-    },
-    {
-      "key": "NVD_API_KEY",
-      "description": "National Vulnerability Database API key",
-      "required": false,
-      "secret": true
-    }
-  ],
   "resources": {
-    "cpu": "2",
-    "memory": "4Gi",
-    "storage": "20Gi"
+    "cpu": "1",
+    "memory": "2Gi",
+    "storage": "10Gi"
   },
   "scaling": {
     "minReplicas": 1,
-    "maxReplicas": 3,
+    "maxReplicas": 2,
     "targetCPU": 70
   },
   "monitoring": {
@@ -86,11 +41,5 @@
     "healthChecks": true,
     "logs": true,
     "metrics": true
-  },
-  "backup": {
-    "enabled": true,
-    "schedule": "0 2 * * *",
-    "retention": "7d",
-    "volumes": ["postgres_data"]
   }
 }
