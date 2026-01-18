@@ -1,116 +1,369 @@
-# CodeMentor AI - Intelligent Code Review Assistant
+# TraceLens Integration Examples
 
-CodeMentor AI is an autonomous code review assistant that analyzes pull requests, provides detailed feedback, and suggests improvements using advanced AI models. Built with Kiro CLI for streamlined development workflows and intelligent automation.
+Complete examples showing how to integrate TraceLens with popular frameworks.
 
-## Prerequisites
+## React Application Example
 
-- Python 3.11+
-- Node.js 18+ (for frontend)
-- Docker and Docker Compose
-- Git
-- Kiro CLI installed and authenticated
-
-## Quick Start
-
-1. **Clone and setup**
-   ```bash
-   git clone https://github.com/username/codementor-ai
-   cd codementor-ai
-   pip install -r requirements.txt
-   npm install
-   ```
-
-2. **Configure environment**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your API keys
-   ```
-
-3. **Run the application**
-   ```bash
-   docker-compose up -d
-   python app.py
-   ```
-
-4. **Access the interface**
-   - Web UI: http://localhost:3000
-   - API: http://localhost:8000/docs
-
-## Architecture & Codebase Overview
-
-### System Architecture
-- **Backend**: FastAPI with async processing
-- **Frontend**: React with TypeScript
-- **AI Engine**: OpenAI GPT-4 + Claude integration
-- **Database**: PostgreSQL with Redis caching
-- **Queue**: Celery for background tasks
-
-### Directory Structure
-```
-codementor-ai/
-├── backend/
-│   ├── api/           # FastAPI routes
-│   ├── services/      # Business logic
-│   └── models/        # Database models
-├── frontend/
-│   ├── src/components/
-│   └── src/pages/
-├── .kiro/
-│   ├── steering/      # Project guidelines
-│   └── prompts/       # Custom Kiro commands
-└── docker-compose.yml
+### Installation
+```bash
+npm install @tracelens/browser-sdk
 ```
 
-### Key Components
-- **Review Engine** (`backend/services/review.py`): Core AI analysis logic
-- **GitHub Integration** (`backend/api/webhooks.py`): PR event handling
-- **Dashboard** (`frontend/src/pages/Dashboard.tsx`): Main user interface
-- **Custom Kiro Prompts** (`.kiro/prompts/`): Development automation
+### Basic Integration
+```javascript
+// src/tracelens.js
+import { TraceLensSDK } from '@tracelens/browser-sdk';
 
-## Deep Dive
+export const tracer = new TraceLensSDK({
+  projectKey: 'your-project-key',
+  endpoint: 'http://localhost:3001/api/events',
+  enableWebVitals: true,
+  enableResourceTiming: true,
+  sampling: 1.0 // 100% in development
+});
 
-### AI Review Process
-1. **Code Analysis**: Parses diff and identifies changed files
-2. **Context Building**: Gathers relevant codebase context
-3. **AI Processing**: Sends structured prompts to AI models
-4. **Result Synthesis**: Combines multiple AI responses
-5. **Feedback Generation**: Creates actionable review comments
+// Start tracking
+tracer.start();
+```
 
-### Kiro CLI Integration
-- **Custom Prompts**: `@review-pr`, `@analyze-code`, `@suggest-tests`
-- **Steering Documents**: Define code standards and review criteria
-- **Automated Workflows**: Pre-commit hooks and CI integration
+### App.js Integration
+```javascript
+// src/App.js
+import React, { useEffect } from 'react';
+import { tracer } from './tracelens';
 
-### Performance Optimizations
-- **Caching**: Redis for API responses and AI results
-- **Async Processing**: Background queue for large PRs
-- **Rate Limiting**: Intelligent API usage management
+function App() {
+  useEffect(() => {
+    // Track page load
+    tracer.trackPageLoad('home');
+    
+    // Track custom events
+    tracer.trackEvent('app-mounted', {
+      timestamp: Date.now(),
+      route: window.location.pathname
+    });
+  }, []);
 
-## Troubleshooting
+  const handleButtonClick = () => {
+    // Track user interactions
+    tracer.trackInteraction('button-click', {
+      component: 'main-cta',
+      timestamp: Date.now()
+    });
+  };
 
-### Common Issues
+  return (
+    <div className="App">
+      <h1>My App with TraceLens</h1>
+      <button onClick={handleButtonClick}>
+        Track This Click
+      </button>
+    </div>
+  );
+}
 
-**AI responses are slow**
-- Check API key limits and quotas
-- Verify Redis is running: `docker-compose ps`
-- Monitor queue status: `celery -A app.celery inspect active`
+export default App;
+```
 
-**GitHub webhook not triggering**
-- Verify webhook URL in repository settings
-- Check ngrok tunnel if developing locally
-- Review webhook payload in GitHub settings
+### Custom Hook for Tracking
+```javascript
+// src/hooks/useTraceLens.js
+import { useEffect } from 'react';
+import { tracer } from '../tracelens';
 
-**Database connection errors**
-- Ensure PostgreSQL is running: `docker-compose up postgres`
-- Check connection string in `.env`
-- Run migrations: `python manage.py migrate`
+export function useTraceLens(componentName) {
+  useEffect(() => {
+    const startTime = performance.now();
+    
+    return () => {
+      const duration = performance.now() - startTime;
+      tracer.trackEvent('component-lifecycle', {
+        component: componentName,
+        duration,
+        type: 'unmount'
+      });
+    };
+  }, [componentName]);
 
-**Frontend build fails**
-- Clear node modules: `rm -rf node_modules && npm install`
-- Check Node.js version: `node --version` (requires 18+)
-- Verify environment variables in `.env`
+  const trackAction = (action, data = {}) => {
+    tracer.trackEvent('user-action', {
+      component: componentName,
+      action,
+      ...data,
+      timestamp: Date.now()
+    });
+  };
 
-### Getting Help
-- Check logs: `docker-compose logs -f`
-- Review Kiro CLI documentation: `kiro-cli --help`
-- Open an issue on GitHub with error details
+  return { trackAction };
+}
+```
+
+## Express API Example
+
+### Installation
+```bash
+npm install @tracelens/server-sdk
+```
+
+### Basic Integration
+```javascript
+// server.js
+import express from 'express';
+import { createTraceLensMiddleware } from '@tracelens/server-sdk';
+
+const app = express();
+
+// Add TraceLens middleware
+app.use(createTraceLensMiddleware({
+  projectKey: 'your-project-key',
+  endpoint: 'http://localhost:3001/api/traces',
+  enableDependencyScanning: true,
+  enableExecutionTracking: true
+}));
+
+// Your routes
+app.get('/api/users', async (req, res) => {
+  // TraceLens automatically tracks:
+  // - Request timing
+  // - Database queries
+  // - External API calls
+  // - Dependencies used
+  
+  const users = await db.users.findAll();
+  res.json(users);
+});
+
+app.listen(3000, () => {
+  console.log('Server running with TraceLens monitoring');
+});
+```
+
+### Custom Span Tracking
+```javascript
+// services/userService.js
+import { TraceLensServerSDK } from '@tracelens/server-sdk';
+
+const tracer = new TraceLensServerSDK({
+  projectKey: 'your-project-key',
+  endpoint: 'http://localhost:3001/api/traces'
+});
+
+export class UserService {
+  async getUserProfile(userId) {
+    return tracer.createSpan('get-user-profile', async (span) => {
+      span.setAttributes({
+        'user.id': userId,
+        'operation': 'database-query'
+      });
+
+      try {
+        // Database query
+        const user = await db.users.findById(userId);
+        
+        // External API call
+        const preferences = await tracer.createSpan('fetch-preferences', async (prefSpan) => {
+          prefSpan.setAttributes({
+            'external.api': 'preferences-service',
+            'user.id': userId
+          });
+          
+          return await fetch(`/api/preferences/${userId}`);
+        });
+
+        span.setStatus({ code: 'OK' });
+        return { user, preferences };
+        
+      } catch (error) {
+        span.setStatus({ 
+          code: 'ERROR', 
+          message: error.message 
+        });
+        throw error;
+      }
+    });
+  }
+}
+```
+
+## Next.js Application Example
+
+### pages/_app.js
+```javascript
+import { TraceLensSDK } from '@tracelens/browser-sdk';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+
+const tracer = new TraceLensSDK({
+  projectKey: process.env.NEXT_PUBLIC_TRACELENS_PROJECT_KEY,
+  endpoint: process.env.NEXT_PUBLIC_TRACELENS_ENDPOINT,
+  enableWebVitals: true
+});
+
+function MyApp({ Component, pageProps }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    tracer.start();
+
+    // Track route changes
+    const handleRouteChange = (url) => {
+      tracer.trackPageLoad(url);
+    };
+
+    router.events.on('routeChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
+
+  return <Component {...pageProps} />;
+}
+
+export default MyApp;
+```
+
+### API Route with TraceLens
+```javascript
+// pages/api/users.js
+import { createTraceLensMiddleware } from '@tracelens/server-sdk';
+
+const traceLensMiddleware = createTraceLensMiddleware({
+  projectKey: process.env.TRACELENS_PROJECT_KEY,
+  endpoint: process.env.TRACELENS_ENDPOINT
+});
+
+export default async function handler(req, res) {
+  // Apply TraceLens middleware
+  await new Promise((resolve) => {
+    traceLensMiddleware(req, res, resolve);
+  });
+
+  if (req.method === 'GET') {
+    // Your API logic here
+    const users = await fetchUsers();
+    res.status(200).json(users);
+  }
+}
+```
+
+## Vue.js Application Example
+
+### main.js
+```javascript
+import { createApp } from 'vue';
+import { TraceLensSDK } from '@tracelens/browser-sdk';
+import App from './App.vue';
+
+const tracer = new TraceLensSDK({
+  projectKey: 'your-project-key',
+  endpoint: 'http://localhost:3001/api/events'
+});
+
+const app = createApp(App);
+
+// Vue plugin for TraceLens
+app.config.globalProperties.$tracer = tracer;
+
+// Start tracking
+tracer.start();
+
+app.mount('#app');
+```
+
+### Component Usage
+```vue
+<template>
+  <div>
+    <button @click="trackClick">Track This</button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'MyComponent',
+  mounted() {
+    this.$tracer.trackEvent('component-mounted', {
+      component: 'MyComponent'
+    });
+  },
+  methods: {
+    trackClick() {
+      this.$tracer.trackInteraction('button-click', {
+        component: 'MyComponent',
+        action: 'cta-click'
+      });
+    }
+  }
+};
+</script>
+```
+
+## Environment Configuration
+
+### .env.local (Frontend)
+```bash
+NEXT_PUBLIC_TRACELENS_PROJECT_KEY=your-project-key
+NEXT_PUBLIC_TRACELENS_ENDPOINT=http://localhost:3001/api/events
+```
+
+### .env (Backend)
+```bash
+TRACELENS_PROJECT_KEY=your-project-key
+TRACELENS_ENDPOINT=http://localhost:3001/api/traces
+```
+
+## Production Configuration
+
+### Sampling for Production
+```javascript
+const tracer = new TraceLensSDK({
+  projectKey: process.env.TRACELENS_PROJECT_KEY,
+  endpoint: process.env.TRACELENS_ENDPOINT,
+  sampling: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+  enableWebVitals: true,
+  bufferSize: 100,
+  flushInterval: 5000
+});
+```
+
+### Error Boundaries with Tracking
+```javascript
+class TrackedErrorBoundary extends React.Component {
+  componentDidCatch(error, errorInfo) {
+    tracer.trackError(error, {
+      component: this.props.componentName,
+      errorInfo,
+      timestamp: Date.now()
+    });
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <h1>Something went wrong.</h1>;
+    }
+    return this.props.children;
+  }
+}
+```
+
+## Testing with TraceLens
+
+### Jest Test Setup
+```javascript
+// setupTests.js
+import { TraceLensSDK } from '@tracelens/browser-sdk';
+
+// Mock TraceLens in tests
+jest.mock('@tracelens/browser-sdk', () => ({
+  TraceLensSDK: jest.fn().mockImplementation(() => ({
+    start: jest.fn(),
+    trackEvent: jest.fn(),
+    trackPageLoad: jest.fn(),
+    trackInteraction: jest.fn()
+  }))
+}));
+```
+
+---
+
+**Ready to integrate TraceLens?** Check the [Quick Start Guide](../QUICKSTART.md) for more details.

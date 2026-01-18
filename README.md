@@ -228,7 +228,7 @@ npm run build
 
 ## 📚 Documentation & Examples
 
-- **[Quick Start Guide](docs/QUICKSTART.md)** - Get running in 5 minutes
+- **[Quick Start Guide](QUICKSTART.md)** - Get running in 5 minutes
 - **[API Documentation](docs/API.md)** - Complete API reference
 - **[Integration Examples](examples/)** - React and Express samples
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
