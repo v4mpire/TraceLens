@@ -1,1 +1,0 @@
-{"status":"healthy","timestamp":1768689186392,"service":"tracelens-dashboard","version":"0.2.0","uptime":11.66001309,"memory":{"rss":69029888,"heapTotal":23109632,"heapUsed":12505120,"external":3495301,"arrayBuffers":73321},"environment":"production"}
