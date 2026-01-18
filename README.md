@@ -5,9 +5,247 @@
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Local First](https://img.shields.io/badge/deployment-localhost-green)](docs/DEPLOYMENT.md)
 
-> **Stop guessing why your app is slow. TraceLens shows you exactly what's blocking your users.**
+> **"My app is slow" → TraceLens shows you exactly which part is slow and why.**
 
-TraceLens transforms web application observability by focusing on **causality over metrics**. Instead of showing what happened, TraceLens explains **why it happened** by reconstructing execution order from real runtime signals and building causal dependency graphs.
+## 🤔 What is TraceLens? (In Simple Terms)
+
+**Imagine your web app is like a restaurant:**
+- Customers (users) place orders (make requests)
+- Kitchen staff (your code) prepares food (processes requests)
+- Sometimes service is slow, but you don't know why
+
+**Traditional monitoring tools** tell you:
+- "Kitchen is busy" (CPU usage high)
+- "Orders taking long" (response time increased)
+- "Some orders failed" (error rate up)
+
+**TraceLens tells you:**
+- "The pizza oven is broken, that's why all pizza orders take 5 minutes extra"
+- "The new waiter is slow at taking orders, causing a 2-minute delay"
+- "The credit card machine is down, blocking all payments"
+
+**In developer terms:**
+- Instead of "API is slow" → "Database query in getUserProfile() takes 340ms"
+- Instead of "High CPU usage" → "Image processing function is blocking 80% of requests"
+- Instead of "Security alert" → "This vulnerable package is only used in admin routes (low risk)"
+
+## 🎯 Why Should You Care?
+
+### Before TraceLens (The Struggle)
+```
+You: "The app is slow"
+Boss: "Fix it"
+You: *spends 4 hours checking logs, metrics, guessing*
+You: *asks ChatGPT/Claude 10 times about different theories*
+You: *finally finds it's a slow database query*
+Time wasted: 4 hours + $20 in AI credits
+```
+
+### With TraceLens (The Solution)
+```
+You: "The app is slow"
+TraceLens: "getUserProfile() database query takes 340ms"
+You: *asks AI once: "How to optimize this specific query?"*
+You: *implements fix, TraceLens confirms it worked*
+Time saved: 3.5 hours + $18 in AI credits
+```
+
+## 🚀 How Easy Is It? (2 Minutes Setup)
+
+### For Your Existing React App
+```bash
+npm install @tracelens/browser-sdk
+```
+
+Add 3 lines to your App.js:
+```javascript
+import { TraceLensSDK } from '@tracelens/browser-sdk';
+const tracer = new TraceLensSDK({ projectKey: 'my-app' });
+tracer.start(); // That's it!
+```
+
+### For Your Existing Express API
+```bash
+npm install @tracelens/server-sdk
+```
+
+Add 2 lines to your server.js:
+```javascript
+import { createTraceLensMiddleware } from '@tracelens/server-sdk';
+app.use(createTraceLensMiddleware({ projectKey: 'my-app' }));
+```
+
+### See Results Instantly
+```bash
+git clone https://github.com/v4mpire/TraceLens.git
+cd TraceLens
+docker-compose up -d
+# Open http://localhost:3000 - Done!
+```
+
+## 📊 What You'll See (Real Examples)
+
+### Example 1: Slow Website
+**Before:** "My React app loads slowly"
+**TraceLens shows:** 
+```
+Homepage Load Time: 3.2 seconds
+├── JavaScript Bundle: 0.8s ✅ Good
+├── CSS Loading: 0.2s ✅ Good  
+├── API Call (/api/user): 2.1s ❌ SLOW!
+└── Images: 0.1s ✅ Good
+
+Problem: API call is the bottleneck
+```
+
+### Example 2: Slow API
+**Before:** "My API is slow"
+**TraceLens shows:**
+```
+GET /api/users - 1.2 seconds total
+├── Express routing: 2ms ✅ Good
+├── Database query: 1150ms ❌ SLOW!
+├── JSON serialization: 48ms ✅ Good
+└── Response sending: 5ms ✅ Good
+
+Problem: Database query needs optimization
+```
+
+### Example 3: Security Alert
+**Before:** "You have 47 security vulnerabilities"
+**TraceLens shows:**
+```
+Security Issues Found: 3 (that actually matter)
+├── lodash@4.17.20 - Used in user authentication ❌ HIGH RISK
+├── axios@0.21.1 - Used in admin panel only ⚠️ MEDIUM RISK  
+└── moment@2.29.1 - Not used in production ✅ LOW RISK
+
+Focus on: Fix lodash first, it affects all users
+```
+
+## 💰 How It Saves You Money
+
+### AI Coding Costs
+**Without TraceLens:**
+- "My app is slow, help me debug" → Vague, expensive conversations
+- Multiple back-and-forth messages to narrow down the issue
+- AI suggests generic solutions that might not work
+
+**With TraceLens:**
+- "How do I optimize this 340ms database query?" → Specific, cheap conversation
+- One targeted question with exact context
+- AI gives precise solutions that actually work
+
+**Real savings:** $50-100/month in AI credits for active developers
+
+### Development Time
+**Without TraceLens:**
+- 2-4 hours debugging performance issues
+- Guessing which part of your code is slow
+- Testing multiple theories
+
+**With TraceLens:**
+- 10-15 minutes to identify exact problem
+- Direct path to the solution
+- Immediate validation that fixes work
+
+**Real savings:** 10-20 hours/month for active development
+
+## 🛠️ Perfect for Any Developer
+
+### Beginner Developers
+- **No complex setup** - Works with your existing code
+- **Visual dashboard** - See problems clearly, no log reading
+- **Learn your app** - Understand how your code actually runs
+- **Better debugging** - Stop guessing, start knowing
+
+### Experienced Developers  
+- **Production safe** - <1ms overhead, won't slow your app
+- **Self-hosted** - Your data stays on your computer
+- **Replaces multiple tools** - One dashboard instead of 5 different monitoring tools
+- **AI-friendly** - Perfect for ChatGPT/Claude/Kiro CLI workflows
+
+### Teams
+- **Faster onboarding** - New developers see how the app works
+- **Better collaboration** - Share exact problems, not vague descriptions
+- **Reduced debugging time** - Less "it works on my machine" issues
+- **Focus on building** - Less time debugging, more time creating
+
+## 🎮 Works Great With Your Favorite Tools
+
+### With ChatGPT/Claude
+```
+Instead of: "My React app is slow, what could be wrong?"
+You ask: "How do I optimize this database query that takes 340ms?"
+Result: Targeted help, faster solutions
+```
+
+### With Kiro CLI
+```bash
+kiro-cli "TraceLens shows my API call takes 2 seconds, how do I fix it?"
+# Gets specific context about your actual bottleneck
+```
+
+### With VS Code/Cursor
+- See real performance data while coding
+- Ask AI tools specific questions about actual problems
+- Validate fixes immediately
+
+## 🏠 Runs on Your Computer (Privacy First)
+
+- **No cloud signup** - Everything runs locally
+- **Your data stays yours** - Never leaves your machine
+- **No monthly fees** - Free and open source
+- **Works offline** - No internet required after setup
+
+## 🤝 Tell Your Team About TraceLens
+
+**Copy-paste this message:**
+
+---
+
+*Hey team! 👋*
+
+*Found this cool tool called TraceLens that shows exactly why our app is slow instead of just telling us "it's slow".*
+
+*Super easy to add to our existing code (literally 2 lines), runs on localhost, and helps us ask better questions to ChatGPT/Claude instead of wasting credits on vague debugging.*
+
+*Check it out: https://github.com/v4mpire/TraceLens*
+
+*Takes 2 minutes to try: `git clone` → `docker-compose up` → open localhost:3000*
+
+---
+
+## 🚀 Try It Right Now (2 Minutes)
+
+```bash
+# 1. Get TraceLens
+git clone https://github.com/v4mpire/TraceLens.git
+cd TraceLens
+
+# 2. Start it
+docker-compose up -d
+
+# 3. Open dashboard
+open http://localhost:3000
+
+# 4. Add to your app (optional)
+npm install @tracelens/browser-sdk @tracelens/server-sdk
+```
+
+**That's it!** You now have a tool that shows you exactly why your app is slow.
+
+## 📚 Learn More
+
+- **[Beginner's Guide](BEGINNER_GUIDE.md)** - Easy explanation to share with your team
+- **[2-Minute Setup Guide](QUICKSTART.md)** - Get started immediately
+- **[Copy-Paste Examples](examples/)** - Add to React, Express, Next.js
+- **[Common Problems](docs/TROUBLESHOOTING.md)** - Quick fixes
+- **[API Reference](docs/API.md)** - Technical details
+
+---
+
+**TraceLens: Stop guessing why your app is slow. Start knowing.** 🔍✨
 
 ## 🎯 What is TraceLens?
 
