@@ -1,0 +1,61 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - button [ref=e4]:
+    - img [ref=e5]
+  - generic [ref=e7]:
+    - generic [ref=e8]:
+      - link "TraceLens" [ref=e9] [cursor=pointer]:
+        - /url: /
+        - img [ref=e11]
+        - text: TraceLens
+      - button "Toggle theme" [ref=e13]:
+        - img [ref=e14]
+        - img [ref=e20]
+        - text: Toggle theme
+    - generic [ref=e23]: All Systems Operational
+    - navigation [ref=e24]:
+      - link "Dashboard" [ref=e25] [cursor=pointer]:
+        - /url: /dashboard
+        - img [ref=e26]
+        - text: Dashboard
+      - link "Traces" [ref=e29] [cursor=pointer]:
+        - /url: /traces
+        - img [ref=e30]
+        - text: Traces
+      - link "Performance" [ref=e32] [cursor=pointer]:
+        - /url: /performance
+        - img [ref=e33]
+        - text: Performance
+      - link "Security" [ref=e35] [cursor=pointer]:
+        - /url: /security
+        - img [ref=e36]
+        - text: Security
+    - generic [ref=e39]:
+      - paragraph [ref=e40]: Runtime Truth Engine
+      - paragraph [ref=e41]: v1.0.0 • Production Ready
+  - generic [ref=e42]:
+    - banner [ref=e43]:
+      - generic [ref=e44]:
+        - navigation [ref=e46]:
+          - link "Home" [ref=e47] [cursor=pointer]:
+            - /url: /
+            - img [ref=e48]
+          - img [ref=e51]
+          - text: Dashboard
+        - generic [ref=e53]:
+          - button "Search" [ref=e54]:
+            - img [ref=e55]
+            - text: Search
+          - button "Notifications" [ref=e58]:
+            - img [ref=e59]
+            - text: Notifications
+          - button "Settings" [ref=e62]:
+            - img [ref=e63]
+            - text: Settings
+          - button "User menu" [ref=e66]:
+            - img [ref=e67]
+            - text: User menu
+    - main
+```

@@ -1,0 +1,53 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - navigation [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - img [ref=e7]
+        - text: TraceLens
+      - generic [ref=e9]:
+        - link "Dashboard" [ref=e10] [cursor=pointer]:
+          - /url: /dashboard
+        - link "GitHub" [ref=e11] [cursor=pointer]:
+          - /url: https://github.com/v4mpire/TraceLens
+          - img [ref=e12]
+          - text: GitHub
+  - generic [ref=e16]:
+    - generic [ref=e17]:
+      - generic [ref=e18]: Production Ready • Open Source
+      - heading "TraceLens" [level=1] [ref=e19]
+      - heading "Runtime Truth Engine for Web Applications" [level=2] [ref=e20]
+      - paragraph [ref=e21]: Focus on causality over metrics. Deterministic analysis of blocking paths and runtime-relevant vulnerabilities.
+    - generic [ref=e22]:
+      - generic [ref=e23]:
+        - img [ref=e25]
+        - heading "Performance" [level=3] [ref=e27]
+        - paragraph [ref=e28]: Real-time bottleneck detection with <1ms overhead
+      - generic [ref=e29]:
+        - img [ref=e31]
+        - heading "Security" [level=3] [ref=e33]
+        - paragraph [ref=e34]: Runtime vulnerability analysis and CVE mapping
+      - generic [ref=e35]:
+        - img [ref=e37]
+        - heading "Insights" [level=3] [ref=e40]
+        - paragraph [ref=e41]: Causal dependency graphs and root cause analysis
+    - generic [ref=e42]:
+      - generic [ref=e43]:
+        - link "Open Dashboard" [ref=e44] [cursor=pointer]:
+          - /url: /dashboard
+          - text: Open Dashboard
+          - img [ref=e45]
+        - link "View on GitHub" [ref=e47] [cursor=pointer]:
+          - /url: https://github.com/v4mpire/TraceLens
+          - img [ref=e48]
+          - text: View on GitHub
+          - img [ref=e51]
+      - generic [ref=e55]:
+        - generic [ref=e56]: Self-hosted & secure
+        - generic [ref=e57]: Production ready
+        - generic [ref=e58]: Open source
+  - contentinfo [ref=e59]:
+    - paragraph [ref=e60]: Built with ❤️ for the developer community • MIT License
+```

@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+// Graph export utilities for TraceLens dependency graphs
 
 export interface ExportOptions {
   format?: 'png' | 'svg' | 'json';
@@ -147,8 +147,8 @@ export class GraphExporter {
     
     try {
       return JSON.parse(stored);
-    } catch (error) {
-      console.error('Failed to parse layout preferences:', error);
+    } catch (_error) {
+      console.error('Failed to parse layout preferences:', _error);
       return null;
     }
   }
@@ -255,7 +255,7 @@ export class GraphExporter {
     try {
       const jsonString = decodeURIComponent(atob(compressed));
       return JSON.parse(jsonString);
-    } catch (error) {
+    } catch {
       throw new Error('Invalid compressed graph state');
     }
   }
@@ -278,7 +278,7 @@ export const downloadBlob = (blob: Blob, filename: string): void => {
 export const copyToClipboard = async (text: string): Promise<void> => {
   try {
     await navigator.clipboard.writeText(text);
-  } catch (error) {
+  } catch {
     // Fallback for older browsers
     const textArea = document.createElement('textarea');
     textArea.value = text;
