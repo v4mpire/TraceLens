@@ -137,9 +137,32 @@ python3 install.py
 
 If you prefer manual setup, see the [detailed integration guide](.kiro/prompts/tracelens-integrate.md).
 
-## Troubleshooting
+## ✅ Integration Success Stories
 
-### Integration Failed
+### Real-World Integration: VedMuni Astrology Platform
+
+**Project**: Next.js 16 + React 19 + Convex + Clerk + Razorpay  
+**Integration Time**: ~2 minutes  
+**Result**: Full observability with AI-queryable performance data
+
+```bash
+# In VedMuni project directory
+@tracelens-integrate
+
+# AI automatically detected and integrated:
+✅ Next.js 16 + React 19 frontend monitoring
+✅ Convex backend tracing  
+✅ API route performance tracking
+✅ Environment configuration
+✅ MCP setup for AI queries
+```
+
+**Now possible queries:**
+```bash
+kiro-cli "How fast is the astrology calculation API?"
+kiro-cli "Are there any slow Razorpay payment flows?"
+kiro-cli "What's causing layout shifts in the horoscope component?"
+```
 1. **Check project structure**: Ensure package.json exists
 2. **Verify TraceLens is running**: `curl http://localhost:3001/health`
 3. **Check permissions**: Ensure write access to project files

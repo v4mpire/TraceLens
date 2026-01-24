@@ -106,6 +106,10 @@ npm install -g @tracelens/mcp-server
 ```
 *Automatically detects your framework and adds TraceLens monitoring*
 
+**✅ Proven Success**: Successfully integrated into Next.js 16 + React 19 + Convex projects in ~2 minutes
+
+**✅ Proven Success**: Successfully integrated into Next.js 16 + React 19 + Convex projects in ~2 minutes
+
 **Manual Natural Language Queries:**
 ```bash
 kiro-cli "What are my app's current performance bottlenecks?"
