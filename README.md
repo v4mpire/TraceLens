@@ -99,7 +99,14 @@ app.use(createTraceLensMiddleware({
 npm install -g @tracelens/mcp-server
 ```
 
-**Natural Language Queries:**
+**Universal Integration (Recommended):**
+```bash
+# In any project directory with Kiro CLI
+@tracelens-integrate
+```
+*Automatically detects your framework and adds TraceLens monitoring*
+
+**Manual Natural Language Queries:**
 ```bash
 kiro-cli "What are my app's current performance bottlenecks?"
 kiro-cli "Show me the dependency graph for user authentication"

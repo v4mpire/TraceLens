@@ -67,6 +67,13 @@ kiro-cli "Show me the slowest API endpoints"
 kiro-cli "What should I optimize first?"
 ```
 
+**Universal Integration:**
+```bash
+# In any project directory with Kiro CLI
+@tracelens-integrate
+```
+*Automatically detects your framework and adds TraceLens monitoring*
+
 **MCP Configuration** (automatically created):
 ```json
 {
