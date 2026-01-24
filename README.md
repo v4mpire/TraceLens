@@ -21,21 +21,45 @@ TraceLens is a self-hosted observability platform that transforms how developers
 
 ## Quick Start (2 Minutes)
 
+### Option 1: Automated Installation (Recommended)
+```bash
+# 1. Clone TraceLens
+git clone https://github.com/v4mpire/TraceLens.git
+cd TraceLens
+
+# 2. Run the installer (handles everything automatically)
+python3 install.py
+```
+
+**The installer will:**
+- ✅ Check prerequisites (Docker, Node.js)
+- ✅ Start database services (PostgreSQL + Redis)
+- ✅ Install dependencies and build packages
+- ✅ Start TraceLens API and Web Dashboard
+- ✅ Configure AI integration (MCP server)
+- ✅ Show you exactly how to use TraceLens
+
+### Option 2: Manual Installation
 ```bash
 # 1. Get TraceLens
 git clone https://github.com/v4mpire/TraceLens.git
 cd TraceLens
 
-# 2. Start it
-docker-compose up -d
+# 2. Start databases
+docker-compose up -d postgres redis
 
-# 3. Open dashboard
-open http://localhost:3000
+# 3. Install and build
+npm install && npm run build
+
+# 4. Start services
+# (See install.py for detailed commands)
 ```
 
-**Add to your app:**
+### Option 3: NPM Packages Only
 ```bash
+# Just install the SDKs for existing projects
 npm install @tracelens/browser-sdk @tracelens/server-sdk
+npm install -g @tracelens/mcp-server
 ```
 
 <details>

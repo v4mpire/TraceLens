@@ -45,6 +45,25 @@ Imagine your web app is like a restaurant:
 **The Result**: Instead of guessing "the kitchen is slow," you know "the chef takes 5 minutes to find salt because the pantry isn't organized."
 </details>
 
+## 🚀 Get Started in 2 Minutes (Seriously!)
+
+**One command does everything:**
+```bash
+git clone https://github.com/v4mpire/TraceLens.git
+cd TraceLens
+python3 install.py
+```
+
+**That's it!** The Python installer:
+- ✅ Checks if you have Docker and Node.js
+- ✅ Starts the database (PostgreSQL + Redis)
+- ✅ Builds all the TraceLens services
+- ✅ Starts the web dashboard at http://localhost:3000
+- ✅ Sets up AI integration for Kiro CLI
+- ✅ Shows you exactly how to use everything
+
+**No complex setup, no configuration files, no headaches.**
+
 ## Quick Setup: Add TraceLens to Any Project
 
 ### Step 1: Install the Magic Tools
