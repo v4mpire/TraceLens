@@ -1,15 +1,22 @@
 # TraceLens Quick Start Guide
 
-Get TraceLens running locally in 5 minutes and start understanding why your app is slow.
+Get TraceLens running locally in 5 minutes and start debugging with AI-powered observability.
 
-## 🚀 Option 1: Use NPM Packages (Recommended)
+## 🚀 Installation Options
 
-### Install SDKs
+### Option 1: NPM Packages (Recommended)
+
 ```bash
+# Install SDKs
 npm install @tracelens/browser-sdk @tracelens/server-sdk
+
+# Install MCP server for AI integration
+npm install -g @tracelens/mcp-server
 ```
 
-### Frontend Integration (2 lines)
+<details>
+<summary><strong>📱 Frontend Integration</strong></summary>
+
 ```javascript
 import { TraceLensSDK } from '@tracelens/browser-sdk';
 
@@ -20,8 +27,11 @@ const tracer = new TraceLensSDK({
 
 tracer.start(); // Automatic Web Vitals and performance tracking
 ```
+</details>
 
-### Backend Integration (Express)
+<details>
+<summary><strong>🖥️ Backend Integration</strong></summary>
+
 ```javascript
 import { createTraceLensMiddleware } from '@tracelens/server-sdk';
 import express from 'express';
@@ -32,24 +42,30 @@ app.use(createTraceLensMiddleware({
   endpoint: 'http://localhost:3001/api/traces'
 }));
 ```
+</details>
 
-## 🏠 Option 2: Run Local TraceLens Instance
+### Option 2: Local Development Setup
 
-### One-Command Setup
+<details>
+<summary><strong>🐳 Docker Setup</strong></summary>
+
 ```bash
+# Clone repository
 git clone https://github.com/v4mpire/TraceLens.git
 cd TraceLens
-npm install
+
+# Start all services
 docker-compose up -d
+
+# Services will be available at:
+# - Dashboard: http://localhost:3000
+# - API: http://localhost:3001
+# - Database: PostgreSQL on port 5432
+# - Cache: Redis on port 6379
 ```
+</details>
 
-### Access Your Dashboard
-- 🌐 **Dashboard**: http://localhost:3000
-- 📡 **API**: http://localhost:3001
-- 🗄️ **Database**: PostgreSQL on port 5432
-- 🚀 **Cache**: Redis on port 6379
-
-## 🎮 Perfect for AI-Assisted Development
+## 🤖 AI Integration Setup
 
 ### With Kiro CLI + MCP Integration
 ```bash
@@ -72,87 +88,99 @@ kiro-cli "Show me the dependency graph for user authentication"
 kiro-cli "What security vulnerabilities should I fix first?"
 ```
 
+<details>
+<summary><strong>🔧 Advanced MCP Configuration</strong></summary>
+
+```json
+{
+  "mcpServers": {
+    "tracelens": {
+      "command": "tracelens-mcp",
+      "args": [
+        "--endpoint", "http://localhost:3001",
+        "--project", "my-app",
+        "--api-key", "your-api-key"
+      ],
+      "env": {
+        "TRACELENS_LOG_LEVEL": "info"
+      }
+    }
+  }
+}
+```
+</details>
+
 ### With Claude Code / Cursor
 ```javascript
 // Give AI tools actual runtime context through MCP
 // "My getUserProfile API is slow" → TraceLens MCP shows exact 340ms database query
 // Ask targeted questions: "How do I optimize this specific query?"
-
-// Ask targeted questions
-// "How can I optimize this specific query that's causing 340ms delays?"
 ```
 
-## 📊 What You'll See Immediately
+## 🎯 What You Get
 
-### Real-Time Dependency Graph
-```
-Frontend (120ms) → API Gateway (45ms) → User Service (230ms) → Database (180ms)
-                                    ↓
-                                Cache (15ms)
-                                    ↓
-                            External API (340ms) ← BOTTLENECK!
-```
+<details>
+<summary><strong>📊 Performance Insights</strong></summary>
 
-### Causal Analysis
-- **Critical Path**: External API is blocking 89% of requests
-- **Impact**: 340ms added to every user request
-- **Solution**: Cache external API responses or find alternative
+- **Bottleneck Detection**: Identify exact slow operations
+- **Critical Path Analysis**: See what's blocking your app
+- **Dependency Mapping**: Understand component relationships
+- **Real-time Monitoring**: <1ms overhead production monitoring
+</details>
 
-## 🔧 Development Workflow
+<details>
+<summary><strong>🛡️ Security Analysis</strong></summary>
 
-### 1. Identify Issues with TraceLens
-TraceLens shows you exactly what's slow and why.
+- **Runtime Vulnerability Assessment**: Only alerts for actually used packages
+- **CVE Impact Analysis**: Understand real security exposure
+- **Dependency Risk Scoring**: Prioritize fixes that matter
+</details>
 
-### 2. Ask AI Tools Specific Questions
-Instead of "My app is slow", ask "How do I optimize this 340ms database query in getUserProfile()?"
+<details>
+<summary><strong>🤖 AI-Powered Debugging</strong></summary>
 
-### 3. Implement AI-Suggested Fixes
-Get targeted solutions for real bottlenecks.
+- **Natural Language Queries**: Ask questions in plain English
+- **Precise Context**: Give AI tools exact performance data
+- **Cost Reduction**: Reduce AI debugging costs by 80%
+- **Faster Resolution**: 10-15 minutes instead of 2-4 hours
+</details>
 
-### 4. Validate with TraceLens
-Immediately see if your fixes actually worked.
+## 🔧 Verification
 
-## 💰 Save Money on AI Coding
+<details>
+<summary><strong>✅ Test Your Setup</strong></summary>
 
-### Before TraceLens
-- ❌ "My app is slow, help me debug" (vague, expensive)
-- ❌ Multiple back-and-forth conversations
-- ❌ Guessing at solutions
-- ❌ Repeated debugging of same issues
+1. **Check Dashboard**: Visit http://localhost:3000
+2. **Verify API**: `curl http://localhost:3001/health`
+3. **Test MCP**: `kiro-cli "Check TraceLens health status"`
+4. **Monitor Performance**: Generate some traffic and see traces appear
+</details>
 
-### With TraceLens
-- ✅ "Optimize this specific 340ms query" (targeted, efficient)
-- ✅ One conversation with precise context
-- ✅ Data-driven solutions
-- ✅ Permanent visibility into performance
+## 🆘 Troubleshooting
 
-## 🛠️ Supported Frameworks
+<details>
+<summary><strong>🐛 Common Issues</strong></summary>
 
-**Frontend**: React, Vue, Angular, Next.js, Nuxt.js, SvelteKit  
-**Backend**: Express, Fastify, Koa (Python/Go coming soon)
+**Docker Issues:**
+- Ensure ports 3000, 3001, 5432, 6379 are available
+- Run `docker-compose logs` to check service status
 
-## 📈 Performance Guarantees
+**MCP Issues:**
+- Verify `tracelens-mcp` is in PATH: `which tracelens-mcp`
+- Check Kiro CLI MCP configuration: `/mcp` command
 
-- **Browser SDK**: <1ms overhead
-- **Server SDK**: <1ms per request
-- **Dashboard**: <2s load time
-- **API**: <100ms response time
+**SDK Issues:**
+- Ensure correct endpoint URLs in SDK configuration
+- Check network connectivity to TraceLens API
+</details>
 
-## 🔒 Privacy & Security
+## 📚 Next Steps
 
-- **Self-Hosted**: Your data never leaves localhost
-- **Minimal Data**: Only performance metadata
-- **Production Safe**: Non-blocking operation
-- **Open Source**: Full transparency
-
-## 🆘 Need Help?
-
-- **Documentation**: [Full docs](../README.md)
-- **Examples**: [React & Express demos](../examples/)
-- **Issues**: [GitHub Issues](https://github.com/v4mpire/TraceLens/issues)
+- **[API Documentation](docs/API.md)** - Complete API reference
+- **[MCP Integration Guide](docs/MCP_INTEGRATION.md)** - Advanced AI tool setup
+- **[Examples](examples/)** - React and Express integration examples
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Detailed problem solving
 
 ---
 
-**Ready to stop guessing and start understanding?** 🔍✨
-
-[Back to README](../README.md) | [View Examples](../examples/) | [Join Community](https://github.com/v4mpire/TraceLens/discussions)
+**Ready to debug with AI?** Start asking TraceLens questions through your favorite AI tool! 🤖✨

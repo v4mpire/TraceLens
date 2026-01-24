@@ -6,19 +6,25 @@
 
 ## Recent Developments (January 24, 2026)
 
-### 🤖 MCP Integration Complete
-- **Model Context Protocol Server**: Built comprehensive MCP server for AI tool integration
-- **AI-Queryable Observability**: Natural language queries through Kiro CLI, Claude Code, Cursor
+### 🤖 MCP Integration Complete & Published ✅
+- **NPM Package Published**: `@tracelens/mcp-server@1.0.0` now available globally
+- **Model Context Protocol Server**: Complete AI tool integration for natural language queries
 - **5 Core Tools**: Performance bottlenecks, dependency analysis, security insights, trace querying, health monitoring
-- **NPM Package**: Published `@tracelens/mcp-server` for global installation
-- **Documentation**: Complete setup guides and usage examples
+- **AI-Queryable Observability**: Direct integration with Kiro CLI, Claude Code, Cursor
+- **Installation**: `npm install -g @tracelens/mcp-server`
 
 ### 🎯 AI-First Development Platform
 TraceLens now serves as the perfect companion for AI-assisted development:
-- Query performance data with natural language
-- Get precise context for AI debugging sessions
-- Eliminate expensive back-and-forth with AI tools
-- Validate AI-suggested fixes immediately
+- Query performance data with natural language instead of dashboard navigation
+- Get precise context for AI debugging sessions instead of vague "app is slow" descriptions
+- Eliminate expensive back-and-forth with AI tools by providing exact bottleneck data
+- Validate AI-suggested fixes immediately with real-time monitoring
+
+### 📚 Documentation Enhancement
+- Updated all documentation with published NPM package references
+- Added GitHub collapsibles for better readability and organization
+- Simplified README.md to reduce overwhelming content while maintaining comprehensive information
+- Enhanced MCP integration guides with real-world usage examples
 
 ## Recent Developments (January 18, 2026)
 
