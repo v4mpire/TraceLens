@@ -1,0 +1,50 @@
+{
+  "name": "@tracelens/mcp-server",
+  "version": "1.0.0",
+  "description": "TraceLens MCP Server - Query your observability data through AI tools",
+  "main": "dist/index.js",
+  "bin": {
+    "tracelens-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "lint": "eslint src/**/*.ts",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "observability",
+    "performance",
+    "tracing",
+    "ai-tools",
+    "kiro-cli"
+  ],
+  "author": "TraceLens Team",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.4.0",
+    "@tracelens/shared": "^1.0.0",
+    "axios": "^1.6.0",
+    "commander": "^11.0.0"
+  },
+  "devDependencies": {
+    "@tracelens/eslint-config": "file:../../tools/eslint-config",
+    "@tracelens/tsconfig": "file:../../tools/tsconfig",
+    "@types/node": "^20.0.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

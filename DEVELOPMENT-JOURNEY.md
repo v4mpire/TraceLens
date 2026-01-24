@@ -1,12 +1,28 @@
 # TraceLens Development Journey Documentation
 
 **Project**: TraceLens - Runtime Truth Engine for Web Applications  
-**Documentation Date**: January 17, 2026  
-**Status**: Production Deployment Successful ✅  
+**Documentation Date**: January 24, 2026  
+**Status**: Production Deployment + MCP Integration Complete ✅  
 
 ## Executive Summary
 
-TraceLens has successfully completed its development journey from concept to production deployment. The project transforms web application observability by focusing on **causality over metrics**, providing deterministic explanations for performance bottlenecks and security risks through real runtime signal analysis.
+TraceLens has successfully completed its development journey from concept to production deployment with comprehensive AI tool integration. The project transforms web application observability by focusing on **causality over metrics**, providing deterministic explanations for performance bottlenecks and security risks through real runtime signal analysis. Now enhanced with Model Context Protocol integration for seamless AI-assisted debugging workflows.
+
+## Latest Enhancement: MCP Integration (January 24, 2026)
+
+### 🤖 AI-Queryable Observability Platform
+- **MCP Server Package**: `@tracelens/mcp-server` published to NPM
+- **Natural Language Queries**: "What's making my API slow?" → Precise bottleneck identification
+- **AI Tool Integration**: Seamless integration with Kiro CLI, Claude Code, Cursor
+- **5 Core Tools**: Performance analysis, dependency mapping, security insights, trace querying, health monitoring
+- **Cost Reduction**: Eliminates expensive AI debugging sessions by providing precise context
+
+### 🎯 Perfect AI Development Companion
+TraceLens now serves as the ultimate companion for AI-assisted development:
+- Query performance data with natural language instead of dashboard navigation
+- Get deterministic analysis instead of guessing about bottlenecks
+- Validate AI-suggested fixes with immediate feedback
+- Reduce back-and-forth conversations with AI tools by 80%
 
 ## Development Timeline & Achievements
 

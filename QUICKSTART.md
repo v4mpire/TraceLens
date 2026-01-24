@@ -51,23 +51,32 @@ docker-compose up -d
 
 ## 🎮 Perfect for AI-Assisted Development
 
-### With Kiro CLI
+### With Kiro CLI + MCP Integration
 ```bash
-# Start TraceLens in your project
-kiro-cli "Set up TraceLens monitoring for my Express API"
+# Install TraceLens MCP server
+npm install -g @tracelens/mcp-server
 
-# Debug with real data
-kiro-cli "My /api/users endpoint is slow, what's the bottleneck?"
+# Add to .kiro/settings/mcp.json
+{
+  "mcpServers": {
+    "tracelens": {
+      "command": "tracelens-mcp",
+      "args": ["--endpoint", "http://localhost:3001"]
+    }
+  }
+}
 
-# Validate fixes
-kiro-cli "Did my caching fix improve the response time?"
+# Natural language queries
+kiro-cli "What are my app's current performance bottlenecks?"
+kiro-cli "Show me the dependency graph for user authentication"
+kiro-cli "What security vulnerabilities should I fix first?"
 ```
 
 ### With Claude Code / Cursor
 ```javascript
-// Give AI tools actual runtime context
-const bottleneck = await traceLens.getCriticalPath();
-// "The database query in getUserProfile() is taking 340ms"
+// Give AI tools actual runtime context through MCP
+// "My getUserProfile API is slow" → TraceLens MCP shows exact 340ms database query
+// Ask targeted questions: "How do I optimize this specific query?"
 
 // Ask targeted questions
 // "How can I optimize this specific query that's causing 340ms delays?"

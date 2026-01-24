@@ -291,6 +291,17 @@ When using **Kiro CLI**, **Claude Code**, or other AI coding tools:
 - 💡 **Smarter Debugging**: Let TraceLens find the issue, let AI help you fix it
 - 🔄 **Validate Fixes**: Immediately see if your AI-suggested fixes actually work
 
+### 🤖 MCP Integration for AI Tools
+```bash
+# Install TraceLens MCP server
+npm install -g @tracelens/mcp-server
+
+# Natural language queries through AI tools
+kiro-cli "What are my app's current performance bottlenecks?"
+kiro-cli "Show me the dependency graph for user authentication"
+kiro-cli "What security vulnerabilities should I fix first?"
+```
+
 ## 🛠️ Quick Start (5 Minutes)
 
 ### Option 1: Use Published NPM Packages (Recommended)
