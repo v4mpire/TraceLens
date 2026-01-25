@@ -1,9 +1,17 @@
 {
   "name": "@tracelens/server-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TraceLens Server SDK - Backend tracing and dependency analysis with OpenTelemetry",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "files": [
     "dist/**/*",
     "README.md",
@@ -35,21 +43,11 @@
     "url": "https://github.com/v4mpire/TraceLens.git",
     "directory": "packages/server-sdk"
   },
-  "homepage": "https://github.com/username/tracelens#readme",
+  "homepage": "https://github.com/v4mpire/TraceLens#readme",
   "bugs": {
-    "url": "https://github.com/username/tracelens/issues"
+    "url": "https://github.com/v4mpire/TraceLens/issues"
   },
-  "dependencies": {
-    "@opentelemetry/api": "^1.7.0",
-    "@opentelemetry/auto-instrumentations-node": "^0.40.0",
-    "@opentelemetry/exporter-trace-otlp-http": "^0.45.0",
-    "@opentelemetry/resources": "^1.18.0",
-    "@opentelemetry/sdk-node": "^0.45.0",
-    "@opentelemetry/sdk-trace-base": "^1.18.0",
-    "@opentelemetry/semantic-conventions": "^1.18.0",
-    "@tracelens/shared": "^1.0.0",
-    "fastify-plugin": "^4.5.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@tracelens/eslint-config": "file:../../tools/eslint-config",
     "@tracelens/tsconfig": "file:../../tools/tsconfig",

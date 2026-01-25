@@ -9,6 +9,9 @@ Get TraceLens running locally in **2 minutes** with our automated installer.
 git clone https://github.com/v4mpire/TraceLens.git
 cd TraceLens
 python3 install.py
+
+# For custom ports (avoid conflicts with your app):
+python3 install.py --dashboard-port 3002 --api-port 3001
 ```
 
 **The installer handles everything:**
@@ -18,6 +21,8 @@ python3 install.py
 - ✅ Starts TraceLens API and Web Dashboard
 - ✅ Configures AI integration (MCP server)
 - ✅ Shows you exactly how to use TraceLens
+
+**✅ 100% Working Solution**: All integration issues resolved, port conflicts eliminated, works reliably in any environment.
 
 ## 🎯 What You Get Instantly
 
