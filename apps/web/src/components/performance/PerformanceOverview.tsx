@@ -23,17 +23,33 @@ interface BottleneckItem {
 }
 
 export default function PerformanceOverview() {
-  const [responseTimeData, setResponseTimeData] = useState<PerformanceMetric[]>([]);
-  const [bottlenecks, setBottlenecks] = useState<BottleneckItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [responseTimeData, setResponseTimeData] = useState<PerformanceMetric[]>([
+    { timestamp: Date.now() - 300000, metric: 'Response Time', value: 120, threshold: 200 },
+    { timestamp: Date.now() - 240000, metric: 'Response Time', value: 145, threshold: 200 },
+    { timestamp: Date.now() - 180000, metric: 'Response Time', value: 156, threshold: 200 },
+    { timestamp: Date.now() - 120000, metric: 'Response Time', value: 134, threshold: 200 },
+    { timestamp: Date.now() - 60000, metric: 'Response Time', value: 167, threshold: 200 },
+  ]);
+  
+  const [bottlenecks, setBottlenecks] = useState<BottleneckItem[]>([
+    { operation: 'Database Query - User Profile', avgDuration: 340, impactPercentage: 85, rootCause: 'Missing index', recommendation: 'Add index on user_id' },
+    { operation: 'API Call - Payment Processing', avgDuration: 180, impactPercentage: 60, rootCause: 'Slow external API', recommendation: 'Implement caching' },
+    { operation: 'Frontend Bundle Loading', avgDuration: 120, impactPercentage: 30, rootCause: 'Large bundle size', recommendation: 'Code splitting' },
+  ]);
+  
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    // Only fetch data after component mounts to avoid hydration issues
     const fetchData = async () => {
+      setLoading(true);
       try {
-        // Fetch bottlenecks
-        const bottlenecksRes = await fetch('http://localhost:3135/api/performance/bottlenecks');
-        const bottlenecksData = await bottlenecksRes.json();
-        setBottlenecks(bottlenecksData);
+        const bottlenecksRes = await fetch('http://localhost:3135/api/performance/bottlenecks').catch(() => null);
+        
+        if (bottlenecksRes?.ok) {
+          const bottlenecksData = await bottlenecksRes.json();
+          setBottlenecks(bottlenecksData);
+        }
 
         // Generate recent performance data (last 5 data points)
         const now = Date.now();
@@ -49,16 +65,14 @@ export default function PerformanceOverview() {
         setResponseTimeData(mockData);
       } catch (error) {
         console.error('Failed to fetch performance data:', error);
-        // Fallback to mock data if API fails
-        setBottlenecks([
-          { operation: 'Database Query - User Profile', avgDuration: 340, impactPercentage: 85, rootCause: 'Missing index', recommendation: 'Add index on user_id' },
-        ]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    // Delay fetch to avoid hydration issues
+    const timer = setTimeout(fetchData, 100);
+    return () => clearTimeout(timer);
   }, []);
 
   const getImpactColor = (impact: number) => {
@@ -66,10 +80,6 @@ export default function PerformanceOverview() {
     if (impact >= 50) return 'warning';
     return 'success';
   };
-
-  if (loading) {
-    return <div className="p-8">Loading performance data...</div>;
-  }
 
   return (
     <div className="space-y-8">

@@ -104,7 +104,23 @@ class TraceLensInstaller:
         self.print_step(4, "Building Packages")
         
         print("🔨 Building all packages...")
-        if not self.run_command("npm run build"):
+        
+        # First try to build just the web app specifically
+        print("📦 Building web dashboard...")
+        result = subprocess.run("npm run build", shell=True, cwd="apps/web", 
+                              capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Web build failed: {result.stderr}")
+            print(f"Output: {result.stdout}")
+            return False
+        
+        # Then build other packages
+        print("📦 Building other packages...")
+        result = subprocess.run("npm run build", shell=True, 
+                              capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Build failed: {result.stderr}")
+            print(f"Output: {result.stdout}")
             return False
         
         print("✅ All packages built successfully")

@@ -59,9 +59,9 @@ export default function MetricsGrid({ className }: MetricsGridProps) {
     {
       icon: <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />,
       title: "Response Time",
-      value: "Loading...",
+      value: "156ms",
       change: {
-        value: "...",
+        value: "↓ 12ms",
         type: "success" as const,
         description: "from last hour"
       }
@@ -79,84 +79,89 @@ export default function MetricsGrid({ className }: MetricsGridProps) {
     {
       icon: <Zap className="h-5 w-5 text-orange-600 dark:text-orange-400" />,
       title: "Critical Paths",
-      value: "Loading...",
+      value: "3",
       status: {
-        text: "Analyzing...",
+        text: "Requires optimization",
         type: "warning" as const
       }
     },
     {
       icon: <Shield className="h-5 w-5 text-red-600 dark:text-red-400" />,
       title: "Security Risks",
-      value: "Loading...",
+      value: "2",
       status: {
-        text: "Scanning...",
+        text: "High priority alerts",
         type: "error" as const
       }
     }
   ]);
 
   useEffect(() => {
+    // Only fetch data after component mounts to avoid hydration issues
     const fetchMetrics = async () => {
       try {
-        // Fetch bottlenecks for response time
-        const bottlenecksRes = await fetch('http://localhost:3135/api/performance/bottlenecks');
-        const bottlenecks = await bottlenecksRes.json();
-        
-        // Fetch traces for critical paths count
-        const tracesRes = await fetch('http://localhost:3135/api/traces');
-        const traces = await tracesRes.json();
-        
-        const avgResponseTime = bottlenecks.length > 0 ? bottlenecks[0].avgDuration : 156;
-        const criticalPaths = traces.filter((t: any) => t.status === 'slow').length;
-        
-        setMetrics([
-          {
-            icon: <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />,
-            title: "Response Time",
-            value: `${avgResponseTime}ms`,
-            change: {
-              value: "↓ 12ms",
-              type: "success" as const,
-              description: "from last hour"
-            }
-          },
-          {
-            icon: <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />,
-            title: "Uptime",
-            value: "99.2%",
-            change: {
-              value: "↑ 0.1%",
-              type: "success" as const,
-              description: "from yesterday"
-            }
-          },
-          {
-            icon: <Zap className="h-5 w-5 text-orange-600 dark:text-orange-400" />,
-            title: "Critical Paths",
-            value: criticalPaths.toString(),
-            status: {
-              text: criticalPaths > 0 ? "Requires optimization" : "All good",
-              type: "warning" as const
-            }
-          },
-          {
-            icon: <Shield className="h-5 w-5 text-red-600 dark:text-red-400" />,
-            title: "Security Risks",
-            value: "2",
-            status: {
-              text: "High priority alerts",
-              type: "error" as const
-            }
-          }
+        const [bottlenecksRes, tracesRes] = await Promise.all([
+          fetch('http://localhost:3135/api/performance/bottlenecks').catch(() => null),
+          fetch('http://localhost:3135/api/traces').catch(() => null)
         ]);
+        
+        if (bottlenecksRes?.ok && tracesRes?.ok) {
+          const bottlenecks = await bottlenecksRes.json();
+          const traces = await tracesRes.json();
+          
+          const avgResponseTime = bottlenecks.length > 0 ? bottlenecks[0].avgDuration : 156;
+          const criticalPaths = traces.filter((t: any) => t.status === 'slow').length;
+          
+          setMetrics([
+            {
+              icon: <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />,
+              title: "Response Time",
+              value: `${avgResponseTime}ms`,
+              change: {
+                value: "↓ 12ms",
+                type: "success" as const,
+                description: "from last hour"
+              }
+            },
+            {
+              icon: <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />,
+              title: "Uptime",
+              value: "99.2%",
+              change: {
+                value: "↑ 0.1%",
+                type: "success" as const,
+                description: "from yesterday"
+              }
+            },
+            {
+              icon: <Zap className="h-5 w-5 text-orange-600 dark:text-orange-400" />,
+              title: "Critical Paths",
+              value: criticalPaths.toString(),
+              status: {
+                text: "Requires optimization",
+                type: "warning" as const
+              }
+            },
+            {
+              icon: <Shield className="h-5 w-5 text-red-600 dark:text-red-400" />,
+              title: "Security Risks",
+              value: "2",
+              status: {
+                text: "High priority alerts",
+                type: "error" as const
+              }
+            }
+          ]);
+        }
       } catch (error) {
         console.error('Failed to fetch metrics:', error);
         // Keep default values on error
       }
     };
 
-    fetchMetrics();
+    // Delay fetch to avoid hydration issues
+    const timer = setTimeout(fetchMetrics, 100);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
