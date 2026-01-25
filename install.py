@@ -10,12 +10,15 @@ import json
 import os
 import sys
 import requests
+import argparse
 from pathlib import Path
 
 class TraceLensInstaller:
-    def __init__(self):
+    def __init__(self, dashboard_port=3002, api_port=3001):
         self.base_dir = Path.cwd()
         self.services_running = False
+        self.dashboard_port = dashboard_port
+        self.api_port = api_port
         
     def print_step(self, step, message):
         print(f"\n🔧 Step {step}: {message}")
@@ -111,8 +114,8 @@ class TraceLensInstaller:
         """Start ingestion service and web dashboard"""
         self.print_step(5, "Starting TraceLens Services")
         
-        # Create simple backend server
-        backend_code = '''
+        # Create simple backend server with configurable port
+        backend_code = f'''
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -122,32 +125,36 @@ app.use(express.json());
 
 // Mock data for demo
 const mockTraces = [
-  { id: '1', operation: '/api/users', duration: 340, status: 'slow', timestamp: Date.now() - 60000, spans: 5 },
-  { id: '2', operation: '/api/auth/login', duration: 120, status: 'normal', timestamp: Date.now() - 30000, spans: 3 }
+  {{ id: '1', operation: '/api/users', duration: 340, status: 'slow', timestamp: Date.now() - 60000, spans: 5 }},
+  {{ id: '2', operation: '/api/auth/login', duration: 120, status: 'normal', timestamp: Date.now() - 30000, spans: 3 }}
 ];
 
-const mockBottlenecks = [{
+const mockBottlenecks = [{{
   operation: '/api/users', avgDuration: 340, p95Duration: 450, impactPercentage: 85,
   rootCause: 'Database query without index', recommendation: 'Add index on user_id column'
-}];
+}}];
 
-app.get('/health', (req, res) => res.json({ status: 'healthy', timestamp: new Date().toISOString() }));
+app.get('/health', (req, res) => res.json({{ status: 'healthy', timestamp: new Date().toISOString() }}));
 app.get('/api/traces', (req, res) => res.json(mockTraces));
 app.get('/api/performance/bottlenecks', (req, res) => res.json(mockBottlenecks));
-app.post('/api/events', (req, res) => { console.log('Event:', req.body); res.json({ success: true }); });
-app.post('/api/traces', (req, res) => { console.log('Trace:', req.body); res.json({ success: true }); });
+app.post('/api/events', (req, res) => {{ console.log('Event:', req.body); res.json({{ success: true }}); }});
+app.post('/api/traces', (req, res) => {{ console.log('Trace:', req.body); res.json({{ success: true }}); }});
 
-app.listen(3001, () => console.log('🚀 TraceLens API running on http://localhost:3001'));
+app.listen({self.api_port}, () => console.log('🚀 TraceLens API running on http://localhost:{self.api_port}'));
 '''
         
         with open('tracelens-backend.js', 'w') as f:
             f.write(backend_code)
         
-        print("🚀 Starting TraceLens API server...")
+        print(f"🚀 Starting TraceLens API server on port {self.api_port}...")
         self.run_command("node tracelens-backend.js", background=True)
         
-        print("🚀 Starting Web Dashboard...")
-        self.run_command("npm start", cwd="apps/web", background=True)
+        print(f"🚀 Starting Web Dashboard on port {self.dashboard_port}...")
+        # Set environment variable for Next.js port
+        env = os.environ.copy()
+        env['PORT'] = str(self.dashboard_port)
+        subprocess.Popen(["npm", "start"], cwd="apps/web", env=env,
+                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         
         # Wait for services to start
         print("⏳ Waiting for services to start...")
@@ -155,7 +162,7 @@ app.listen(3001, () => console.log('🚀 TraceLens API running on http://localho
         
         # Test API
         try:
-            response = requests.get('http://localhost:3001/health', timeout=5)
+            response = requests.get(f'http://localhost:{self.api_port}/health', timeout=5)
             if response.status_code == 200:
                 print("✅ TraceLens API is running!")
             else:
@@ -167,7 +174,7 @@ app.listen(3001, () => console.log('🚀 TraceLens API running on http://localho
         
         # Test Dashboard
         try:
-            response = requests.get('http://localhost:3000', timeout=5)
+            response = requests.get(f'http://localhost:{self.dashboard_port}', timeout=5)
             if response.status_code == 200:
                 print("✅ Web Dashboard is running!")
             else:
@@ -191,7 +198,7 @@ app.listen(3001, () => console.log('🚀 TraceLens API running on http://localho
             "mcpServers": {
                 "tracelens": {
                     "command": "tracelens-mcp",
-                    "args": ["--endpoint", "http://localhost:3001"]
+                    "args": ["--endpoint", f"http://localhost:{self.api_port}"]
                 }
             }
         }
@@ -209,11 +216,11 @@ app.listen(3001, () => console.log('🚀 TraceLens API running on http://localho
         """Show how to use TraceLens"""
         self.print_step(7, "TraceLens is Ready! Here's How to Use It")
         
-        print("""
+        print(f"""
 🎯 TRACELENS IS NOW RUNNING!
 
-📊 Web Dashboard: http://localhost:3000
-🔌 API Endpoint:  http://localhost:3001
+📊 Web Dashboard: http://localhost:{self.dashboard_port}
+🔌 API Endpoint:  http://localhost:{self.api_port}
 💾 Database:      PostgreSQL + Redis (Docker)
 
 🚀 QUICK START:
@@ -221,21 +228,21 @@ app.listen(3001, () => console.log('🚀 TraceLens API running on http://localho
 1. 📱 Add to your frontend (React/Vue/Angular):
    npm install @tracelens/browser-sdk
    
-   import { TraceLensSDK } from '@tracelens/browser-sdk';
-   const tracer = new TraceLensSDK({
+   import {{ TraceLensSDK }} from '@tracelens/browser-sdk';
+   const tracer = new TraceLensSDK({{
      projectKey: 'my-app',
-     endpoint: 'http://localhost:3001/api/events'
-   });
+     endpoint: 'http://localhost:{self.api_port}/api/events'
+   }});
    tracer.start();
 
 2. 🖥️  Add to your backend (Express/Node.js):
    npm install @tracelens/server-sdk
    
-   import { createTraceLensMiddleware } from '@tracelens/server-sdk';
-   app.use(createTraceLensMiddleware({
+   import {{ createTraceLensMiddleware }} from '@tracelens/server-sdk';
+   app.use(createTraceLensMiddleware({{
      projectKey: 'my-app',
-     endpoint: 'http://localhost:3001/api/traces'
-   }));
+     endpoint: 'http://localhost:{self.api_port}/api/traces'
+   }}));
 
 3. 🤖 Query with AI (Kiro CLI):
    kiro-cli "What are my app's performance bottlenecks?"
@@ -243,9 +250,9 @@ app.listen(3001, () => console.log('🚀 TraceLens API running on http://localho
    kiro-cli "What should I optimize first?"
 
 🔍 TEST THE API:
-   curl http://localhost:3001/health
-   curl http://localhost:3001/api/traces
-   curl http://localhost:3001/api/performance/bottlenecks
+   curl http://localhost:{self.api_port}/health
+   curl http://localhost:{self.api_port}/api/traces
+   curl http://localhost:{self.api_port}/api/performance/bottlenecks
 
 💡 DEMO READY:
    - Real-time performance monitoring
@@ -254,6 +261,13 @@ app.listen(3001, () => console.log('🚀 TraceLens API running on http://localho
    - Self-hosted (your data stays local)
 
 🎬 Perfect for recording your demo video!
+
+⚠️  PORT CONFIGURATION:
+   Dashboard: {self.dashboard_port} (configurable to avoid conflicts)
+   API: {self.api_port} (configurable to avoid conflicts)
+   
+   To use different ports:
+   python3 install.py --dashboard-port 3003 --api-port 3002
 """)
     
     def cleanup_on_exit(self):
@@ -306,7 +320,21 @@ app.listen(3001, () => console.log('🚀 TraceLens API running on http://localho
             self.cleanup_on_exit()
             return False
 
-if __name__ == "__main__":
-    installer = TraceLensInstaller()
+def main():
+    parser = argparse.ArgumentParser(description='TraceLens Installer & Demo Setup')
+    parser.add_argument('--dashboard-port', type=int, default=3002,
+                       help='Port for TraceLens dashboard (default: 3002)')
+    parser.add_argument('--api-port', type=int, default=3001,
+                       help='Port for TraceLens API (default: 3001)')
+    
+    args = parser.parse_args()
+    
+    installer = TraceLensInstaller(
+        dashboard_port=args.dashboard_port,
+        api_port=args.api_port
+    )
     success = installer.run_installation()
     sys.exit(0 if success else 1)
+
+if __name__ == "__main__":
+    main()
