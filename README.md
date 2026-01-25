@@ -40,6 +40,25 @@ python3 demo-mode.py
 - 📱 **Mobile demos** - Works on any device
 - 🚀 **Quick screenshots** - Professional UI immediately
 
+### ⚡ Lightning Install (10 Seconds) - No npm install
+```bash
+# 1. Clone TraceLens (74MB git repo, fast download)
+git clone https://github.com/v4mpire/TraceLens.git
+cd TraceLens
+
+# 2. Lightning demo (10 seconds, skips 664MB node_modules)
+python3 lightning-install.py
+
+# 3. Professional UI ready instantly
+# http://localhost:3134/lightning-dashboard.html
+```
+
+**✅ Perfect for:**
+- 🚀 **Avoiding large downloads** - Skips npm install entirely
+- ⚡ **Maximum speed** - 10 seconds total
+- 🎯 **Judge-friendly** - No waiting for dependencies
+- 💻 **Any environment** - Only needs Python + Node.js
+
 ### 🏆 For Judges & Quick Demos
 ```bash
 # 1. Clone TraceLens
@@ -81,6 +100,8 @@ python3 install.py --dashboard-port 3002 --api-port 3001
 - ✅ Show you exactly how to use TraceLens
 
 **✅ 100% Working Solution**: Fixed all integration issues, port conflicts resolved, SDK packages work reliably in any environment.
+
+**📦 Repository Size**: 74MB git clone (fast), but local node_modules adds 664MB. Use lightning-install.py to avoid the large download!
 
 ### Option 2: Manual Installation
 ```bash
