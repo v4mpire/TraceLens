@@ -19,15 +19,53 @@ TraceLens is a self-hosted observability platform that transforms how developers
 - 💻 **Self-Hosted** - Your data never leaves your infrastructure
 - ⚡ **<1ms Overhead** - Production-safe monitoring
 
-## Quick Start (2 Minutes)
+## Quick Start (30 Seconds) ⚡
 
-### Option 1: Automated Installation (Recommended)
+### 🎬 Ultra-Fast Demo (5 Seconds) - Zero Build Time
 ```bash
 # 1. Clone TraceLens
 git clone https://github.com/v4mpire/TraceLens.git
 cd TraceLens
 
-# 2. Run the installer (handles everything automatically)
+# 2. Instant demo (5 seconds, no dependencies)
+python3 demo-mode.py
+
+# 3. Auto-opens in browser
+# http://localhost:3134/demo-dashboard.html
+```
+
+**✅ Perfect for:**
+- 🏆 **Live hackathon judging** - Instant evaluation
+- 🎬 **Screen recordings** - No waiting, no builds
+- 📱 **Mobile demos** - Works on any device
+- 🚀 **Quick screenshots** - Professional UI immediately
+
+### 🏆 For Judges & Quick Demos
+```bash
+# 1. Clone TraceLens
+git clone https://github.com/v4mpire/TraceLens.git
+cd TraceLens
+
+# 2. Quick start (30 seconds)
+python3 quick-start.py
+
+# 3. Open dashboard
+# http://localhost:3134
+```
+
+**✅ Perfect for:**
+- 🏆 **Hackathon judging** - Fast evaluation
+- 🎬 **Demo recording** - No waiting time  
+- 👨‍💻 **Developer testing** - Instant setup
+- 🤖 **AI integration** - Ready in 30 seconds
+
+### 🔧 Full Installation (2 Minutes)
+```bash
+# 1. Clone TraceLens
+git clone https://github.com/v4mpire/TraceLens.git
+cd TraceLens
+
+# 2. Full installation with build
 python3 install.py
 
 # 3. For custom ports (avoid conflicts with your app)

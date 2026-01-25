@@ -1,0 +1,13 @@
+{
+  "name": "tracelens-quick-api",
+  "version": "1.0.0",
+  "description": "Quick API server for TraceLens demos",
+  "main": "quick-api.js",
+  "dependencies": {
+    "express": "^4.18.0",
+    "cors": "^2.8.5"
+  },
+  "scripts": {
+    "quick-install": "npm install --production --silent"
+  }
+}
