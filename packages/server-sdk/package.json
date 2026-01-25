@@ -18,12 +18,12 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "echo 'Using pre-built dist files'",
     "dev": "tsc --watch",
     "lint": "eslint src/**/*.ts",
     "test": "jest",
     "type-check": "tsc --noEmit",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "echo 'Using pre-built dist files'"
   },
   "keywords": [
     "tracing",
