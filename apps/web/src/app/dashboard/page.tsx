@@ -10,6 +10,8 @@ import DependencyGraph from '../../components/graphs/DependencyGraph';
 import PerformanceChart from '../../components/graphs/PerformanceChart';
 import MetricsGrid from '../../components/dashboard/MetricsGrid';
 import DashboardCard from '../../components/dashboard/DashboardCard';
+import SelfMonitoringBanner from '../../components/SelfMonitoringBanner';
+import OnboardingWizard from '../../components/onboarding/OnboardingWizard';
 import { useRealTimeMetrics } from '../../hooks/useRealTimeMetrics';
 
 // Sample data for demonstration (fallback when real data unavailable)
@@ -69,13 +71,17 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
+      <OnboardingWizard />
       <div className="space-y-8 animate-fade-in">
         {/* Header */}
         <div>
-          <Heading level={1} className="flex items-center gap-3">
-            <Activity className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-            Dashboard
-          </Heading>
+          <div className="flex items-center justify-between">
+            <Heading level={1} className="flex items-center gap-3">
+              <Activity className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              Dashboard
+            </Heading>
+            <SelfMonitoringBanner />
+          </div>
           <Text className="mt-2 text-muted-foreground">
             Real-time performance monitoring and dependency analysis
             {error && (

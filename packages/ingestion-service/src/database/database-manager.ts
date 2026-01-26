@@ -88,12 +88,53 @@ export class DatabaseManager {
   }
 
   // Project management
-  public async createProject(name: string, apiKey: string): Promise<string> {
+  public async createProject(name: string, apiKey: string, options?: { deletable?: boolean; immutable?: boolean }): Promise<string> {
     const result = await this.query(
-      'INSERT INTO projects (name, api_key) VALUES ($1, $2) RETURNING id',
-      [name, apiKey]
+      'INSERT INTO projects (name, api_key, deletable, immutable) VALUES ($1, $2, $3, $4) RETURNING id',
+      [name, apiKey, options?.deletable !== false, options?.immutable === true]
     );
     return result.rows[0].id;
+  }
+
+  public async ensureSystemProject(): Promise<string> {
+    // Check if __SYSTEM__ project exists
+    const existing = await this.query(
+      'SELECT id FROM projects WHERE api_key = $1',
+      ['__SYSTEM__']
+    );
+
+    if (existing.rows.length > 0) {
+      return existing.rows[0].id;
+    }
+
+    // Create __SYSTEM__ project with special flags
+    return this.createProject('TraceLens Dashboard (Self)', '__SYSTEM__', {
+      deletable: false,
+      immutable: true
+    });
+  }
+
+  public async deleteProject(projectId: string): Promise<boolean> {
+    // Check if project is deletable
+    const project = await this.query(
+      'SELECT deletable FROM projects WHERE id = $1',
+      [projectId]
+    );
+
+    if (project.rows.length === 0) {
+      return false; // Project doesn't exist
+    }
+
+    if (!project.rows[0].deletable) {
+      throw new Error('Cannot delete system project');
+    }
+
+    const result = await this.query(
+      'DELETE FROM projects WHERE id = $1 AND deletable = true',
+      [projectId]
+    );
+
+    return result.rowCount > 0;
   }
 
   public async getProjectByApiKey(apiKey: string): Promise<{ id: string; name: string } | null> {

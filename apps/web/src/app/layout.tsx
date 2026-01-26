@@ -1,5 +1,6 @@
 import './globals.css'
 import { ThemeProvider } from 'next-themes'
+import { SelfMonitoringProvider } from '../components/providers/SelfMonitoringProvider'
 
 export const metadata = {
   title: 'TraceLens Dashboard',
@@ -21,7 +22,9 @@ export default function RootLayout({
           disableTransitionOnChange={false}
           storageKey="tracelens-ui-theme"
         >
-          {children}
+          <SelfMonitoringProvider>
+            {children}
+          </SelfMonitoringProvider>
         </ThemeProvider>
       </body>
     </html>
