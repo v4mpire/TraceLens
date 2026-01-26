@@ -233,6 +233,128 @@ server.listen({self.api_port}, () => console.log('🚀 API ready on :{self.api_p
         time.sleep(3)
         return True
 
+    def enhanced_install(self):
+        """Enhanced installation with rich terminal UI"""
+        from rich.console import Console
+        from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
+        from rich.panel import Panel
+        from rich.table import Table
+        from rich.text import Text
+        import time
+        
+        console = Console()
+        
+        # Welcome screen
+        console.print(Panel.fit(
+            "[bold blue]TraceLens Enhanced Installation[/bold blue]\n"
+            "[dim]Runtime Truth Engine for Web Applications[/dim]",
+            border_style="blue"
+        ))
+        
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TaskProgressColumn(),
+            console=console,
+            transient=True,
+        ) as progress:
+            
+            # Prerequisites check
+            task1 = progress.add_task("[cyan]Checking prerequisites...", total=3)
+            console.print("🔍 Checking prerequisites...")
+            
+            # Check Node.js
+            progress.update(task1, advance=1)
+            node_version = self.run_command("node --version", check=False)
+            if not node_version:
+                console.print("❌ Node.js not found. Please install Node.js 18+", style="red")
+                return False
+            console.print(f"✅ Node.js: {node_version}", style="green")
+            
+            # Check Docker
+            progress.update(task1, advance=1)
+            docker_version = self.run_command("docker --version", check=False)
+            if not docker_version:
+                console.print("❌ Docker not found. Please install Docker", style="red")
+                return False
+            console.print(f"✅ Docker: {docker_version}", style="green")
+            
+            # Check Docker Compose
+            progress.update(task1, advance=1)
+            compose_version = self.run_command("docker compose version", check=False)
+            if not compose_version:
+                console.print("❌ Docker Compose not found", style="red")
+                return False
+            console.print(f"✅ Docker Compose: {compose_version}", style="green")
+            
+            # Database startup
+            task2 = progress.add_task("[yellow]Starting databases...", total=1)
+            self.run_command("docker compose up -d postgres redis")
+            progress.update(task2, advance=1)
+            console.print("✅ PostgreSQL and Redis started", style="green")
+            time.sleep(2)
+            
+            # Dependencies installation
+            task3 = progress.add_task("[magenta]Installing dependencies...", total=3)
+            console.print("📥 Cleaning npm cache...")
+            self.run_command("npm cache clean --force", check=False)
+            progress.update(task3, advance=1)
+            
+            console.print("📥 Removing old dependencies...")
+            self.run_command("rm -rf node_modules package-lock.json", check=False)
+            progress.update(task3, advance=1)
+            
+            console.print("📥 Installing fresh dependencies...")
+            self.run_command("npm install")
+            progress.update(task3, advance=1)
+            console.print("✅ Dependencies installed", style="green")
+            
+            # Build process
+            task4 = progress.add_task("[blue]Building packages...", total=1)
+            console.print("🔨 Building TraceLens packages...")
+            self.run_command("npm run build")
+            progress.update(task4, advance=1)
+            console.print("✅ Packages built successfully", style="green")
+            
+            # Service startup
+            task5 = progress.add_task("[green]Starting services...", total=1)
+            console.print(f"🌐 Starting TraceLens services...")
+            env = os.environ.copy()
+            env['DASHBOARD_PORT'] = str(self.dashboard_port)
+            env['API_PORT'] = str(self.api_port)
+            
+            subprocess.Popen(f"cd apps/web && PORT={self.dashboard_port} npm run dev",
+                            shell=True, env=env)
+            progress.update(task5, advance=1)
+            console.print("✅ Services started", style="green")
+            time.sleep(5)
+        
+        # Success table
+        table = Table(title="🎉 Installation Complete!")
+        table.add_column("Service", style="cyan", no_wrap=True)
+        table.add_column("Status", style="green")
+        table.add_column("URL", style="blue")
+        
+        table.add_row("Dashboard", "✅ Running", f"http://localhost:{self.dashboard_port}")
+        table.add_row("API", "✅ Ready", f"http://localhost:{self.api_port}")
+        table.add_row("Database", "✅ Connected", "PostgreSQL + Redis")
+        
+        console.print(table)
+        
+        # Next steps panel
+        next_steps = Panel(
+            "[bold green]🚀 Next Steps:[/bold green]\n\n"
+            "1. Dashboard will open automatically\n"
+            "2. Use AI integration: [cyan]kiro-cli \"What are my performance bottlenecks?\"[/cyan]\n"
+            "3. Integrate with your app: [cyan]npm install @tracelens/browser-sdk[/cyan]\n\n"
+            "[dim]Press Ctrl+C to stop services[/dim]",
+            border_style="green"
+        )
+        console.print(next_steps)
+        
+        return True
+
     def validate_install(self):
         """Validate installation by checking services"""
         print("🔍 Validating installation...")
@@ -452,22 +574,6 @@ OPTIONS:
         print(f"6. Open dashboard at http://localhost:{args.dashboard_port}")
         return
     
-    # Enhanced mode requires rich package
-    if args.enhanced:
-        try:
-            from rich.console import Console
-            from rich.progress import Progress
-            print("🎨 Enhanced mode with rich terminal UI")
-            # Import and run enhanced installer
-            subprocess.run([sys.executable, "enhanced-install.py", 
-                          "--dashboard-port", str(args.dashboard_port),
-                          "--api-port", str(args.api_port)])
-            return
-        except ImportError:
-            print("❌ Enhanced mode requires 'rich' package: pip install rich")
-            print("🔄 Falling back to standard mode...")
-            args.standard = True
-    
     # Run installation
     try:
         if args.demo:
@@ -476,6 +582,15 @@ OPTIONS:
         elif args.quick:
             success = installer.quick_install()
             mode = "quick"
+        elif args.enhanced:
+            try:
+                success = installer.enhanced_install()
+                mode = "enhanced"
+            except ImportError:
+                print("❌ Enhanced mode requires 'rich' package: pip install rich")
+                print("🔄 Falling back to standard mode...")
+                success = installer.standard_install()
+                mode = "standard"
         else:
             success = installer.standard_install()
             mode = "standard"
