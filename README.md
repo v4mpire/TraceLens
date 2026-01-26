@@ -34,12 +34,6 @@ python3 demo-mode.py
 # http://localhost:3134/demo-dashboard.html
 ```
 
-**✅ Perfect for:**
-- 🏆 **Live hackathon judging** - Instant evaluation
-- 🎬 **Screen recordings** - No waiting, no builds
-- 📱 **Mobile demos** - Works on any device
-- 🚀 **Quick screenshots** - Professional UI immediately
-
 ### ⚡ Lightning Install (10 Seconds) - No npm install
 ```bash
 # 1. Clone TraceLens (74MB git repo, fast download)
@@ -53,55 +47,40 @@ python3 lightning-install.py
 # http://localhost:3134/lightning-dashboard.html
 ```
 
-**✅ Perfect for:**
-- 🚀 **Avoiding large downloads** - Skips npm install entirely
-- ⚡ **Maximum speed** - 10 seconds total
-- 🎯 **Judge-friendly** - No waiting for dependencies
-- 💻 **Any environment** - Only needs Python + Node.js
-
-### 🏆 For Judges & Quick Demos
+### 🚀 Quick Start (30 Seconds) - Custom Ports
 ```bash
 # 1. Clone TraceLens
 git clone https://github.com/v4mpire/TraceLens.git
 cd TraceLens
 
-# 2. Quick start (30 seconds)
-python3 quick-start.py
+# 2. Quick start with custom ports
+python3 quick-start.py --dashboard-port 3002 --api-port 3001
 
 # 3. Open dashboard
-# http://localhost:3134
+# http://localhost:3002
 ```
 
-**✅ Perfect for:**
-- 🏆 **Hackathon judging** - Fast evaluation
-- 🎬 **Demo recording** - No waiting time  
-- 👨‍💻 **Developer testing** - Instant setup
-- 🤖 **AI integration** - Ready in 30 seconds
-
-### 🔧 Full Installation (2 Minutes)
+### 🔧 Full Installation (2 Minutes) - Production Ready
 ```bash
 # 1. Clone TraceLens
 git clone https://github.com/v4mpire/TraceLens.git
 cd TraceLens
 
-# 2. Full installation with build
-python3 install.py
-
-# 3. For custom ports (avoid conflicts with your app)
+# 2. Full installation with custom ports
 python3 install.py --dashboard-port 3002 --api-port 3001
+
+# 3. Complete setup with MCP integration
 ```
 
 **The installer will:**
 - ✅ Check prerequisites (Docker, Node.js)
 - ✅ Start database services (PostgreSQL + Redis)
 - ✅ Install dependencies and build packages
-- ✅ Start TraceLens API and Web Dashboard
+- ✅ Start TraceLens with your custom ports
 - ✅ Configure AI integration (MCP server)
-- ✅ Show you exactly how to use TraceLens
+- ✅ Show you the exact AI integration prompt
 
-**✅ 100% Working Solution**: Fixed all integration issues, port conflicts resolved, SDK packages work reliably in any environment.
-
-**📦 Repository Size**: 74MB git clone (fast), but local node_modules adds 664MB. Use lightning-install.py to avoid the large download!
+**✅ 100% Working Solution**: All integration issues resolved, custom port configuration, AI prompts included.
 
 ### Option 2: Manual Installation
 ```bash

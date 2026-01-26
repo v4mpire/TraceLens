@@ -1,5 +1,5 @@
 import './globals.css'
-import { ThemeProvider } from '../components/theme-provider'
+import { ThemeProvider } from 'next-themes'
 
 export const metadata = {
   title: 'TraceLens Dashboard',
@@ -15,7 +15,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-background font-sans antialiased" suppressHydrationWarning>
         <ThemeProvider
+          attribute="class"
           defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange={false}
           storageKey="tracelens-ui-theme"
         >
           {children}

@@ -10,8 +10,9 @@ import DependencyGraph from '../../components/graphs/DependencyGraph';
 import PerformanceChart from '../../components/graphs/PerformanceChart';
 import MetricsGrid from '../../components/dashboard/MetricsGrid';
 import DashboardCard from '../../components/dashboard/DashboardCard';
+import { useRealTimeMetrics } from '../../hooks/useRealTimeMetrics';
 
-// Sample data for demonstration
+// Sample data for demonstration (fallback when real data unavailable)
 const sampleNodes = [
   { id: '1', name: 'Frontend', type: 'service' as const, duration: 120, critical: true },
   { id: '2', name: 'API Gateway', type: 'service' as const, duration: 45 },
@@ -40,9 +41,10 @@ const samplePerformanceData = [
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
+  const { metrics, error } = useRealTimeMetrics();
 
   useEffect(() => {
-    // Simulate loading
+    // Simulate initial loading
     const timer = setTimeout(() => setLoading(false), 1200);
     return () => clearTimeout(timer);
   }, []);
@@ -50,7 +52,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="space-y-8">
+        <div className="space-y-8 animate-fade-in">
           <div className="space-y-2">
             <div className="h-8 w-48 bg-muted animate-pulse rounded" />
             <div className="h-4 w-96 bg-muted animate-pulse rounded" />
@@ -67,24 +69,31 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
+      <div className="space-y-8 animate-fade-in">
         {/* Header */}
         <div>
           <Heading level={1} className="flex items-center gap-3">
-            <Activity className="h-8 w-8 text-blue-600" />
+            <Activity className="h-8 w-8 text-blue-600 dark:text-blue-400" />
             Dashboard
           </Heading>
           <Text className="mt-2 text-muted-foreground">
             Real-time performance monitoring and dependency analysis
+            {error && (
+              <span className="ml-2 text-warning">
+                • Using fallback data (backend unavailable)
+              </span>
+            )}
           </Text>
         </div>
 
         {/* Key Metrics Grid */}
-        <MetricsGrid />
+        <div data-testid="metrics-grid">
+          <MetricsGrid />
+        </div>
 
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <DashboardCard title="Performance Trend">
+          <DashboardCard title="Performance Trend" className="card-modern hover-lift">
             <PerformanceChart 
               data={samplePerformanceData}
               metric="Response Time (ms)"
@@ -93,7 +102,7 @@ export default function DashboardPage() {
             />
           </DashboardCard>
 
-          <DashboardCard title="Dependency Graph">
+          <DashboardCard title="Dependency Graph" className="card-modern hover-lift">
             <DependencyGraph 
               nodes={sampleNodes}
               links={sampleLinks}
@@ -105,16 +114,32 @@ export default function DashboardPage() {
 
         {/* Activity Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <DashboardCard title="Recent Activity" className="lg:col-span-2">
+          <DashboardCard title="Recent Activity" className="lg:col-span-2 card-modern hover-lift">
             <div className="space-y-4">
               {[
-                { icon: <AlertTriangle className="h-4 w-4" />, text: "High response time detected in User Service", time: "2 minutes ago", type: "warning" },
-                { icon: <Users className="h-4 w-4" />, text: "New user registration spike (+15%)", time: "5 minutes ago", type: "success" },
-                { icon: <Database className="h-4 w-4" />, text: "Database query optimization completed", time: "10 minutes ago", type: "success" },
+                { 
+                  icon: <AlertTriangle className="h-4 w-4" />, 
+                  text: metrics ? `Response time: ${metrics.responseTime.current}ms detected` : "High response time detected in User Service", 
+                  time: "2 minutes ago", 
+                  type: "warning" 
+                },
+                { 
+                  icon: <Users className="h-4 w-4" />, 
+                  text: "New user registration spike (+15%)", 
+                  time: "5 minutes ago", 
+                  type: "success" 
+                },
+                { 
+                  icon: <Database className="h-4 w-4" />, 
+                  text: "Database query optimization completed", 
+                  time: "10 minutes ago", 
+                  type: "success" 
+                },
               ].map((activity, index) => (
-                <div key={index} className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
+                <div key={index} className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg hover-lift">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    activity.type === 'warning' ? 'bg-orange-100 text-orange-600' : 'bg-green-100 text-green-600'
+                    activity.type === 'warning' ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400' : 
+                    'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400'
                   }`}>
                     {activity.icon}
                   </div>
@@ -127,14 +152,14 @@ export default function DashboardPage() {
             </div>
           </DashboardCard>
 
-          <DashboardCard title="System Health">
+          <DashboardCard title="System Health" className="card-modern hover-lift">
             <div className="space-y-4">
               {[
                 { name: "API Gateway", status: "healthy", uptime: "99.9%" },
                 { name: "Database", status: "healthy", uptime: "99.8%" },
-                { name: "Cache Layer", status: "warning", uptime: "98.5%" },
+                { name: "Cache Layer", status: metrics?.criticalPaths.status === 'critical' ? 'warning' : 'healthy', uptime: "98.5%" },
               ].map((service, index) => (
-                <div key={index} className="flex items-center justify-between">
+                <div key={index} className="flex items-center justify-between hover-lift p-2 rounded">
                   <div>
                     <Text className="font-medium">{service.name}</Text>
                     <Text variant="small" className="text-muted-foreground">{service.uptime} uptime</Text>

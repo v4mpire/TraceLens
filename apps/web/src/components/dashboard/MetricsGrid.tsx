@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Clock, TrendingUp, Zap, Shield } from 'lucide-react';
+import React from 'react';
+import { Clock, TrendingUp, Zap, Shield, RefreshCw } from 'lucide-react';
 import Card from '../ui/Card';
 import Badge from '../ui/Badge';
 import { Heading, Text } from '../ui/Typography';
+import { useRealTimeMetrics } from '../../hooks/useRealTimeMetrics';
 
 interface MetricCardProps {
   icon: React.ReactNode;
@@ -14,36 +15,48 @@ interface MetricCardProps {
     value: string;
     type: 'success' | 'warning' | 'error';
     description: string;
-  };
+  } | undefined;
   status?: {
     text: string;
     type: 'success' | 'warning' | 'error';
-  };
+  } | undefined;
+  loading?: boolean;
 }
 
-function MetricCard({ icon, title, value, change, status }: MetricCardProps) {
+function MetricCard({ icon, title, value, change, status, loading }: MetricCardProps) {
   return (
     <Card variant="elevated" className="hover:shadow-xl transition-shadow">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-            {icon}
+            {loading ? (
+              <RefreshCw className="h-5 w-5 text-muted-foreground animate-spin" />
+            ) : (
+              icon
+            )}
           </div>
           <div>
             <Text variant="small" className="text-muted-foreground">{title}</Text>
-            <Heading level={4} className="text-2xl">{value}</Heading>
+            <Heading level={4} className="text-2xl">
+              {loading ? '...' : value}
+            </Heading>
           </div>
         </div>
       </div>
-      {change && (
+      {change && !loading && (
         <div className="mt-3 flex items-center">
           <Badge variant={change.type} size="sm">{change.value}</Badge>
           <Text variant="small" className="ml-2">{change.description}</Text>
         </div>
       )}
-      {status && (
+      {status && !loading && (
         <div className="mt-3">
           <Badge variant={status.type} size="sm">{status.text}</Badge>
+        </div>
+      )}
+      {loading && (
+        <div className="mt-3">
+          <div className="h-4 w-24 bg-muted animate-pulse rounded" />
         </div>
       )}
     </Card>
@@ -55,120 +68,116 @@ interface MetricsGridProps {
 }
 
 export default function MetricsGrid({ className }: MetricsGridProps) {
-  const [metrics, setMetrics] = useState([
+  const { metrics, loading, error, lastUpdated, refresh } = useRealTimeMetrics({
+    refreshInterval: 30000, // 30 seconds
+    enabled: true,
+  });
+
+  // Show loading state initially
+  if (loading && !metrics) {
+    return (
+      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${className || ''}`}>
+        {Array.from({ length: 4 }).map((_, i) => (
+          <MetricCard
+            key={i}
+            icon={<div className="h-5 w-5" />}
+            title="Loading..."
+            value="..."
+            loading={true}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  // Use real metrics or fallback
+  const currentMetrics = metrics || {
+    responseTime: { current: 156, change: -12, changeType: 'decrease' as const },
+    uptime: { current: 99.2, change: 0.1, changeType: 'increase' as const },
+    criticalPaths: { count: 3, status: 'warning' as const },
+    securityRisks: { count: 2, status: 'critical' as const },
+  };
+
+  const metricsData = [
     {
       icon: <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />,
       title: "Response Time",
-      value: "156ms",
+      value: `${currentMetrics.responseTime.current}ms`,
       change: {
-        value: "↓ 12ms",
-        type: "success" as const,
+        value: `${currentMetrics.responseTime.changeType === 'decrease' ? '↓' : '↑'} ${Math.abs(currentMetrics.responseTime.change)}ms`,
+        type: (currentMetrics.responseTime.changeType === 'decrease' ? 'success' : 'warning') as 'success' | 'warning' | 'error',
         description: "from last hour"
       }
     },
     {
       icon: <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />,
       title: "Uptime",
-      value: "99.2%",
+      value: `${currentMetrics.uptime.current.toFixed(1)}%`,
       change: {
-        value: "↑ 0.1%",
-        type: "success" as const,
+        value: `${currentMetrics.uptime.changeType === 'increase' ? '↑' : '↓'} ${Math.abs(currentMetrics.uptime.change).toFixed(1)}%`,
+        type: (currentMetrics.uptime.changeType === 'increase' ? 'success' : 'warning') as 'success' | 'warning' | 'error',
         description: "from yesterday"
       }
     },
     {
       icon: <Zap className="h-5 w-5 text-orange-600 dark:text-orange-400" />,
       title: "Critical Paths",
-      value: "3",
+      value: currentMetrics.criticalPaths.count.toString(),
       status: {
-        text: "Requires optimization",
-        type: "warning" as const
+        text: currentMetrics.criticalPaths.status === 'good' ? 'All optimized' : 
+              currentMetrics.criticalPaths.status === 'warning' ? 'Requires optimization' : 'Needs immediate attention',
+        type: (currentMetrics.criticalPaths.status === 'good' ? 'success' : 
+              currentMetrics.criticalPaths.status === 'warning' ? 'warning' : 'error') as 'success' | 'warning' | 'error'
       }
     },
     {
       icon: <Shield className="h-5 w-5 text-red-600 dark:text-red-400" />,
       title: "Security Risks",
-      value: "2",
+      value: currentMetrics.securityRisks.count.toString(),
       status: {
-        text: "High priority alerts",
-        type: "error" as const
+        text: currentMetrics.securityRisks.status === 'good' ? 'No issues detected' :
+              currentMetrics.securityRisks.status === 'warning' ? 'Medium priority alerts' : 'High priority alerts',
+        type: (currentMetrics.securityRisks.status === 'good' ? 'success' :
+              currentMetrics.securityRisks.status === 'warning' ? 'warning' : 'error') as 'success' | 'warning' | 'error'
       }
     }
-  ]);
-
-  useEffect(() => {
-    // Only fetch data after component mounts to avoid hydration issues
-    const fetchMetrics = async () => {
-      try {
-        const [bottlenecksRes, tracesRes] = await Promise.all([
-          fetch('http://localhost:3135/api/performance/bottlenecks').catch(() => null),
-          fetch('http://localhost:3135/api/traces').catch(() => null)
-        ]);
-        
-        if (bottlenecksRes?.ok && tracesRes?.ok) {
-          const bottlenecks = await bottlenecksRes.json();
-          const traces = await tracesRes.json();
-          
-          const avgResponseTime = bottlenecks.length > 0 ? bottlenecks[0].avgDuration : 156;
-          const criticalPaths = traces.filter((t: any) => t.status === 'slow').length;
-          
-          setMetrics([
-            {
-              icon: <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />,
-              title: "Response Time",
-              value: `${avgResponseTime}ms`,
-              change: {
-                value: "↓ 12ms",
-                type: "success" as const,
-                description: "from last hour"
-              }
-            },
-            {
-              icon: <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />,
-              title: "Uptime",
-              value: "99.2%",
-              change: {
-                value: "↑ 0.1%",
-                type: "success" as const,
-                description: "from yesterday"
-              }
-            },
-            {
-              icon: <Zap className="h-5 w-5 text-orange-600 dark:text-orange-400" />,
-              title: "Critical Paths",
-              value: criticalPaths.toString(),
-              status: {
-                text: "Requires optimization",
-                type: "warning" as const
-              }
-            },
-            {
-              icon: <Shield className="h-5 w-5 text-red-600 dark:text-red-400" />,
-              title: "Security Risks",
-              value: "2",
-              status: {
-                text: "High priority alerts",
-                type: "error" as const
-              }
-            }
-          ]);
-        }
-      } catch (error) {
-        console.error('Failed to fetch metrics:', error);
-        // Keep default values on error
-      }
-    };
-
-    // Delay fetch to avoid hydration issues
-    const timer = setTimeout(fetchMetrics, 100);
-    return () => clearTimeout(timer);
-  }, []);
+  ];
 
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${className || ''}`}>
-      {metrics.map((metric, index) => (
-        <MetricCard key={index} {...metric} />
-      ))}
+    <div className={`space-y-4 ${className || ''}`}>
+      {/* Header with refresh info */}
+      <div className="flex items-center justify-between">
+        <div>
+          <Text variant="small" className="text-muted-foreground">
+            {error ? 'Using fallback data - backend unavailable' : 
+             lastUpdated ? `Last updated: ${lastUpdated.toLocaleTimeString()}` : 
+             'Real-time metrics'}
+          </Text>
+        </div>
+        <button
+          onClick={refresh}
+          disabled={loading}
+          className="inline-flex items-center gap-2 px-3 py-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+          Refresh
+        </button>
+      </div>
+
+      {/* Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {metricsData.map((metric, index) => (
+          <MetricCard
+            key={index}
+            icon={metric.icon}
+            title={metric.title}
+            value={metric.value}
+            change={metric.change || undefined}
+            status={metric.status || undefined}
+            loading={loading && !!metrics} // Only show loading on refresh, not initial load
+          />
+        ))}
+      </div>
     </div>
   );
 }

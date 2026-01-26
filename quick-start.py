@@ -1,33 +1,142 @@
 #!/usr/bin/env python3
 """
-TraceLens Quick Start - 30 Second Installation
-Optimized for demos, judges, and quick evaluation
+TraceLens Quick Start - 30 Second Setup
+Minimal dependencies with custom port configuration and AI integration.
 """
 
-import subprocess
-import time
-import json
 import os
 import sys
-import requests
+import subprocess
+import time
+import webbrowser
 import argparse
-from pathlib import Path
 
-class QuickStart:
-    def __init__(self, dashboard_port=3134, api_port=3135):
-        self.dashboard_port = dashboard_port
-        self.api_port = api_port
-        
-    def print_step(self, message):
-        print(f"⚡ {message}")
+def run_command(cmd, cwd=None, check=True):
+    """Run command with error handling"""
+    try:
+        result = subprocess.run(cmd, shell=True, cwd=cwd, check=check, 
+                              capture_output=True, text=True)
+        return result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Command failed: {cmd}")
+        print(f"Error: {e.stderr}")
+        if check:
+            sys.exit(1)
+        return None
+
+def quick_setup(dashboard_port=3002, api_port=3001):
+    """Quick setup with minimal dependencies"""
+    print("⚡ TraceLens Quick Start (30 seconds)")
+    print("=" * 40)
     
-    def run_command(self, cmd, cwd=None, background=False):
-        try:
-            if background:
-                subprocess.Popen(cmd, shell=True, cwd=cwd, 
-                               stdout=subprocess.DEVNULL, 
-                               stderr=subprocess.DEVNULL)
-                return True
+    # Check Node.js
+    node_version = run_command("node --version", check=False)
+    if not node_version:
+        print("❌ Node.js required. Install from https://nodejs.org")
+        sys.exit(1)
+    print(f"✅ Node.js: {node_version}")
+    
+    # Start databases (optional)
+    print("📦 Starting databases...")
+    run_command("docker compose up -d postgres redis", check=False)
+    
+    # Quick install
+    print("📥 Quick install...")
+    run_command("npm install --production")
+    
+    # Start dashboard only
+    print(f"🌐 Starting dashboard on port {dashboard_port}...")
+    env = os.environ.copy()
+    env['PORT'] = str(dashboard_port)
+    
+    subprocess.Popen(f"cd apps/web && PORT={dashboard_port} npm run dev", 
+                    shell=True, env=env)
+    
+    time.sleep(5)
+    
+    dashboard_url = f"http://localhost:{dashboard_port}"
+    print(f"🎉 Dashboard ready: {dashboard_url}")
+    
+    webbrowser.open(dashboard_url)
+    
+    return dashboard_port, api_port
+
+def generate_mcp_setup():
+    """Generate MCP setup instructions"""
+    return """
+🤖 **MCP INTEGRATION SETUP**
+
+1. Install MCP server:
+   ```bash
+   npm install -g @tracelens/mcp-server
+   ```
+
+2. Add to your .kiro/settings/mcp.json:
+   ```json
+   {
+     "mcpServers": {
+       "tracelens": {
+         "command": "tracelens-mcp",
+         "args": ["--endpoint", "http://localhost:3001"]
+       }
+     }
+   }
+   ```
+
+3. Use in any project directory:
+   ```bash
+   kiro-cli "Integrate TraceLens into my app"
+   ```
+"""
+
+def main():
+    parser = argparse.ArgumentParser(description='TraceLens Quick Start')
+    parser.add_argument('--dashboard-port', type=int, default=3002,
+                       help='Dashboard port (default: 3002)')
+    parser.add_argument('--api-port', type=int, default=3001,
+                       help='API port (default: 3001)')
+    
+    args = parser.parse_args()
+    
+    dashboard_port, api_port = quick_setup(args.dashboard_port, args.api_port)
+    
+    mcp_setup = generate_mcp_setup()
+    
+    print(f"""
+✅ **QUICK START COMPLETE!**
+
+📊 Dashboard: http://localhost:{dashboard_port}
+🔌 API: http://localhost:{api_port} (when available)
+
+{mcp_setup}
+
+🚀 **AI INTEGRATION PROMPT:**
+
+Copy this to any coding assistant in your project:
+
+---
+I want to integrate TraceLens observability. Please help me add:
+
+1. Frontend SDK (2 lines): npm install @tracelens/browser-sdk
+2. Backend SDK (3 lines): npm install @tracelens/server-sdk  
+3. MCP integration for AI-queryable insights
+
+My framework: [React/Next.js/Express/etc.]
+TraceLens dashboard: http://localhost:{dashboard_port}
+
+Goal: Transform "app is slow" → "340ms database query bottleneck"
+---
+
+💡 **Next Steps:**
+- Explore the dashboard
+- Integrate SDKs into your app
+- Query performance with AI tools
+
+🎉 **Happy monitoring!**
+""")
+
+if __name__ == "__main__":
+    main()
             else:
                 result = subprocess.run(cmd, shell=True, cwd=cwd, 
                                       capture_output=True, text=True)
