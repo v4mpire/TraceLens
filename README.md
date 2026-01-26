@@ -3,7 +3,7 @@
 [![TypeScript](https://img.shields.io/badge/typescript-100%25-blue)](https://www.typescriptlang.org/)
 [![Performance](https://img.shields.io/badge/overhead-%3C1ms-brightgreen)](https://github.com/v4mpire/TraceLens)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![Self-Hosted](https://img.shields.io/badge/deployment-localhost-green)](docs/DEPLOYMENT.md)
+[![Self-Hosted](https://img.shields.io/badge/deployment-localhost-green)](docs/deployment.md)
 
 TraceLens transforms application debugging by focusing on causality rather than metrics. Instead of telling you "your app is slow," TraceLens builds real-time dependency graphs from browser and server runtime signals to show you exactly why it's slow.
 
@@ -50,20 +50,46 @@ This reduces AI debugging costs by 80% because you get precise context instead o
 ## Quick Start
 
 <details>
-<summary><strong>Installation (2 minutes)</strong></summary>
+<summary><strong>Installation</strong></summary>
 
+**Single Entry Point - See All Options:**
 ```bash
 git clone https://github.com/v4mpire/TraceLens.git
 cd TraceLens
-python3 install.py --dashboard-port 3002 --api-port 3001
+python3 install.py --help
 ```
 
-The installer will:
-- Check prerequisites (Docker, Node.js)
-- Start database services (PostgreSQL + Redis)
-- Install dependencies and build packages
-- Start TraceLens with your custom ports
-- Open dashboard with self-monitoring demonstration
+**Installation Modes:**
+```bash
+# Standard installation (full build)
+python3 install.py
+
+# Quick installation (minimal dependencies)
+python3 install.py --quick
+
+# Demo mode (zero build time, perfect for presentations)
+python3 install.py --demo
+
+# Enhanced installation (rich terminal UI)
+python3 install.py --enhanced
+
+# Custom ports
+python3 install.py --dashboard-port 3000 --api-port 3001
+
+# Validate existing installation
+python3 install.py --validate
+```
+
+The `install.py` script is your single entry point for:
+- Multiple installation modes (standard, quick, demo, enhanced)
+- Custom port configuration to avoid conflicts
+- Prerequisites checking (Docker, Node.js)
+- Database services setup (PostgreSQL + Redis)
+- Dependency installation and package building
+- Automatic dashboard launch with self-monitoring demonstration
+- Installation validation and troubleshooting
+
+Run `python3 install.py --help` to see all available options including installation modes, port configurations, and validation methods.
 </details>
 
 <details>
@@ -215,10 +241,10 @@ kiro-cli "What's the best way to reduce my bundle size?"
 <details>
 <summary><strong>Advanced</strong></summary>
 
-- [API Documentation](docs/API.md) - Complete API reference
-- [MCP Integration](docs/MCP_INTEGRATION.md) - AI tool setup guide
-- [Architecture Guide](docs/ARCHITECTURE.md) - Technical deep dive
-- [Troubleshooting](docs/TROUBLESHOOTING.md) - Common issues and solutions
+- [API Documentation](docs/api.md) - Complete API reference
+- [MCP Integration](docs/mcp-integration.md) - AI tool setup guide
+- [Deployment Guide](docs/deployment.md) - Production deployment
+- [Troubleshooting](docs/troubleshooting.md) - Common issues and solutions
 </details>
 
 ## Why TraceLens Saves Time and Money

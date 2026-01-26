@@ -198,7 +198,7 @@ kiro-cli "What's causing layout shifts in the horoscope component?"
 ## Support
 
 - **GitHub Issues**: [TraceLens Repository](https://github.com/v4mpire/TraceLens/issues)
-- **Documentation**: [Full API Reference](../docs/API.md)
+- **Documentation**: [Full API Reference](../docs/api.md)
 - **Examples**: [Integration Examples](../examples/)
 
 ---

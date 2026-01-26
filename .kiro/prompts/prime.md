@@ -22,7 +22,7 @@ tree -L 3 -I 'node_modules|__pycache__|.git|dist|build'
 - Read any architecture documentation
 - Review steering documents for project context (already loaded in context)
 - Check hackathon-specific documentation (hackathon-evaluation.md, development-methodology.md)
-- Review universal integration documentation (docs/UNIVERSAL_INTEGRATION.md)
+- Review universal integration documentation (docs/universal-integration.md)
 - Avoid reading anything in examples or content_plan folders
 
 ### 3. Identify Key Files

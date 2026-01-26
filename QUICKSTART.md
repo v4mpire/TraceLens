@@ -14,6 +14,14 @@ python3 install.py
 python3 install.py --dashboard-port 3002 --api-port 3001
 ```
 
+## ✨ What You Get
+
+TraceLens provides a production-ready modern interface with:
+- **Real-time Performance Monitoring**: Live metrics and dependency graphs
+- **AI Integration**: Natural language queries via MCP
+- **Self-Monitoring**: Dashboard monitors itself to demonstrate capabilities
+- **Visual Testing**: Automated UI regression testing
+
 **The installer handles everything:**
 - ✅ Checks prerequisites (Docker, Node.js)
 - ✅ Starts database services (PostgreSQL + Redis)
