@@ -283,7 +283,7 @@ kiro-cli "What's the best way to reduce my bundle size?"
 
 ## Contributing
 
-TraceLens is built with systematic development practices. See [DEVELOPMENT-JOURNEY.md](DEVELOPMENT-JOURNEY.md) for our development philosophy and [CHECKPOINTS.md](CHECKPOINTS.md) for systematic progress tracking.
+TraceLens is built with systematic development practices. See [DEVELOPMENT-CHRONICLE.md](DEVELOPMENT-CHRONICLE.md) for our complete development history and [DEVLOG.md](DEVLOG.md) for systematic progress tracking.
 
 ## License
 

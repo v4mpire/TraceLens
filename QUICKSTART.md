@@ -2,15 +2,24 @@
 
 Get TraceLens running locally in **2 minutes** with our automated installer.
 
-## 🚀 One-Command Installation
+## 🚀 Installation Options
 
 ```bash
-# Clone and install everything automatically
+# See all installation options first
 git clone https://github.com/v4mpire/TraceLens.git
 cd TraceLens
+python3 install.py --help
+
+# Standard installation (recommended)
 python3 install.py
 
-# For custom ports (avoid conflicts with your app):
+# Quick installation (minimal dependencies)
+python3 install.py --quick
+
+# Demo mode (zero build time)
+python3 install.py --demo
+
+# Custom ports (avoid conflicts)
 python3 install.py --dashboard-port 3002 --api-port 3001
 ```
 
