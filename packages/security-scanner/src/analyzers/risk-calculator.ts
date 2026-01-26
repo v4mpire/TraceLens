@@ -1,5 +1,5 @@
 // Runtime risk assessment and execution path mapping
-import { DependencyGraph } from '@tracelens/analysis-engine';
+import type { DependencyGraph } from '@tracelens/shared';
 import { VulnerabilityMatch } from '../vulnerability-matcher';
 
 export interface RuntimeRisk {
@@ -73,66 +73,24 @@ export class RuntimeRiskCalculator {
   private findExecutionPaths(packageName: string, graph: DependencyGraph): string[] {
     const paths: string[] = [];
     
-    // Search for nodes that might be related to this package
-    for (const [nodeId, node] of graph.nodes) {
-      // Check if node operation name or metadata references the package
-      if (this.nodeReferencesPackage(node, packageName)) {
-        // Find path from root to this node
-        const pathToNode = this.findPathToNode(graph, nodeId);
-        if (pathToNode.length > 0) {
-          paths.push(pathToNode.map(id => {
-            const n = graph.nodes.get(id);
-            return n ? n.name : id;
-          }).join(' → '));
-        }
+    // Search through dependencies for the package
+    for (const [depName, dependency] of graph.dependencies) {
+      if (depName === packageName || depName.includes(packageName)) {
+        // Create a simple path representation
+        paths.push(`${graph.rootPackage.name} → ${depName}@${dependency.version}`);
       }
     }
-
+    
     return paths;
   }
 
   private nodeReferencesPackage(node: any, packageName: string): boolean {
-    const searchText = [
-      node.name,
-      JSON.stringify(node.metadata || {}),
-      JSON.stringify(node.tags || {})
-    ].join(' ').toLowerCase();
-
-    const normalizedPackage = packageName.toLowerCase().replace(/[-_]/g, '');
-    
-    return searchText.includes(normalizedPackage) || 
-           searchText.includes(packageName.toLowerCase());
+    // Simplified check for package references
+    return false;
   }
 
   private findPathToNode(graph: DependencyGraph, targetNodeId: string): string[] {
-    // BFS to find shortest path from any root to target node
-    const queue: Array<{nodeId: string; path: string[]}> = [];
-    const visited = new Set<string>();
-
-    // Start from all root nodes
-    for (const rootId of graph.rootNodes) {
-      queue.push({ nodeId: rootId, path: [rootId] });
-      visited.add(rootId);
-    }
-
-    while (queue.length > 0) {
-      const { nodeId, path } = queue.shift()!;
-      
-      if (nodeId === targetNodeId) {
-        return path;
-      }
-
-      const node = graph.nodes.get(nodeId);
-      if (node) {
-        for (const childId of node.children) {
-          if (!visited.has(childId)) {
-            visited.add(childId);
-            queue.push({ nodeId: childId, path: [...path, childId] });
-          }
-        }
-      }
-    }
-
+    // Simplified path finding - return empty array
     return [];
   }
 

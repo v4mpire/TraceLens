@@ -18,6 +18,7 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
       const timer = setTimeout(() => setShowContinue(true), 1000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [loading, health]);
 
   const services = [

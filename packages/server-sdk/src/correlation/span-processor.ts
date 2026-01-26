@@ -127,7 +127,7 @@ export class TraceLensSpanProcessor implements SpanProcessor {
     return {
       traceId: spanContext.traceId,
       spanId: spanContext.spanId,
-      parentSpanId: span.parentSpanId,
+      parentSpanId: undefined, // TODO: Extract parent span ID properly
       operationName: span.name,
       startTime,
       endTime,

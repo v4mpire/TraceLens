@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Activity, Eye } from 'lucide-react';
-import Badge from '../ui/Badge';
+import Badge from './ui/Badge';
 
 interface SelfMonitoringBannerProps {
   className?: string;
@@ -44,7 +44,7 @@ export default function SelfMonitoringBanner({ className = '' }: SelfMonitoringB
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      <Badge variant="secondary" size="sm" className="animate-pulse">
+      <Badge variant="info" size="sm" className="animate-pulse">
         <Eye className="h-3 w-3 mr-1" />
         Monitoring Itself
       </Badge>

@@ -134,7 +134,7 @@ export class DatabaseManager {
       [projectId]
     );
 
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   public async getProjectByApiKey(apiKey: string): Promise<{ id: string; name: string } | null> {

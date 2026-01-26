@@ -24,6 +24,7 @@ export default function OnboardingWizard() {
       const timer = setTimeout(() => setIsVisible(true), 500);
       return () => clearTimeout(timer);
     }
+    return undefined; // Explicit return for when shouldShowOnboarding is false
   }, [shouldShowOnboarding]);
 
   if (!shouldShowOnboarding || !isVisible) {

@@ -3,7 +3,7 @@ import { CVEFetcher, CVEData } from './cve-fetcher';
 import { VulnerabilityMatcher, VulnerabilityMatch, RuntimeDependency } from './vulnerability-matcher';
 import { RuntimeRiskCalculator, RuntimeRisk, ExecutionContext } from './analyzers/risk-calculator';
 import { CVEUpdateScheduler } from './schedulers/cve-updater';
-import { DependencyGraph } from '@tracelens/analysis-engine';
+import type { DependencyGraph } from '@tracelens/shared';
 
 export interface SecurityScanResult {
   scanId: string;

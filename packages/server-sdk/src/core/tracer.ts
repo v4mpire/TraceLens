@@ -1,6 +1,6 @@
 // OpenTelemetry integration wrapper for TraceLens
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import { Resource } from '@opentelemetry/resources';
+import { resourceFromAttributes } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
@@ -46,7 +46,7 @@ export class TraceLensServerSDK {
     try {
       // Create OpenTelemetry SDK
       this.nodeSDK = new NodeSDK({
-        resource: new Resource({
+        resource: resourceFromAttributes({
           [SemanticResourceAttributes.SERVICE_NAME]: this.config.serviceName,
           [SemanticResourceAttributes.SERVICE_VERSION]: this.config.serviceVersion,
           [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: this.config.environment,
