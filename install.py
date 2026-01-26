@@ -61,6 +61,9 @@ def setup_tracelens(dashboard_port=3002, api_port=3001):
     
     # Install dependencies
     print("📥 Installing dependencies...")
+    # Clear npm cache first to avoid common issues
+    run_command("npm cache clean --force", check=False)
+    run_command("rm -rf node_modules package-lock.json", check=False)
     run_command("npm install")
     
     # Build packages
