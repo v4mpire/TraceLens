@@ -9,8 +9,8 @@
 ## Ledger Summary
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| **Total Entries** | 48 | - | ✅ |
-| **Bug Fixes** | 12 | - | ✅ |
+| **Total Entries** | 49 | - | ✅ |
+| **Bug Fixes** | 13 | - | ✅ |
 | **Features Added** | 19 | - | ✅ |
 | **UI Changes** | 8 | - | ✅ |
 | **Performance Optimizations** | 5 | - | ✅ |
@@ -19,6 +19,16 @@
 ---
 
 ## Development Entries
+
+### Entry #049 - 2026-01-26 08:02 UTC
+**Type**: BUG_FIX  
+**Component**: Python Installer  
+**Description**: Fix npm install failure due to current working directory issue in install.py  
+**Impact**: CRITICAL - Prevents clean installation in fresh directories  
+**Files Changed**: install.py  
+**Developer**: AI Assistant  
+**Duration**: 10 minutes  
+**Root Cause**: npm install fails with ENOENT uv_cwd error when directory context is lost  
 
 ### Entry #048 - 2026-01-26 05:58 UTC
 **Type**: FEATURE  

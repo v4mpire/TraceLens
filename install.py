@@ -19,9 +19,50 @@ class TraceLensInstaller:
         self.dashboard_port = dashboard_port
         self.api_port = api_port
         
+        # Ensure we're in the TraceLens directory
+        self.project_root = self.find_project_root()
+        if self.project_root:
+            os.chdir(self.project_root)
+        
+    def find_project_root(self):
+        """Find the TraceLens project root directory"""
+        current = os.getcwd()
+        
+        # Check if we're already in the right directory
+        if os.path.exists('package.json') and os.path.exists('turbo.json'):
+            with open('package.json', 'r') as f:
+                data = json.load(f)
+                if data.get('name') == 'tracelens':
+                    return current
+        
+        # Look for TraceLens directory in current path
+        for root, dirs, files in os.walk(current):
+            if 'package.json' in files and 'turbo.json' in files:
+                package_path = os.path.join(root, 'package.json')
+                try:
+                    with open(package_path, 'r') as f:
+                        data = json.load(f)
+                        if data.get('name') == 'tracelens':
+                            return root
+                except:
+                    continue
+        
+        return None
+        
     def run_command(self, cmd, cwd=None, check=True, background=False):
         """Run command with error handling"""
         try:
+            # Ensure we have a valid working directory
+            if cwd is None:
+                cwd = os.getcwd()
+            
+            # Verify the directory exists
+            if not os.path.exists(cwd):
+                print(f"❌ Working directory does not exist: {cwd}")
+                if check:
+                    sys.exit(1)
+                return None
+            
             if background:
                 subprocess.Popen(cmd, shell=True, cwd=cwd,
                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -68,6 +109,11 @@ class TraceLensInstaller:
         print("🚀 TraceLens Standard Installation")
         print("=" * 50)
         
+        # Validate project directory
+        if not self.project_root:
+            print("❌ TraceLens project directory not found. Please run from TraceLens directory.")
+            return False
+        
         self.check_prerequisites()
         
         # Start databases
@@ -102,6 +148,11 @@ class TraceLensInstaller:
         print("⚡ TraceLens Quick Installation (30 seconds)")
         print("=" * 50)
         
+        # Validate project directory
+        if not self.project_root:
+            print("❌ TraceLens project directory not found. Please run from TraceLens directory.")
+            return False
+        
         self.check_prerequisites(minimal=True)
         
         # Start databases (optional)
@@ -127,6 +178,11 @@ class TraceLensInstaller:
         """Demo installation with zero build time"""
         print("🎬 TraceLens Demo Mode - Zero Build Time!")
         print("=" * 50)
+        
+        # Validate project directory
+        if not self.project_root:
+            print("❌ TraceLens project directory not found. Please run from TraceLens directory.")
+            return False
         
         self.check_prerequisites(minimal=True)
         
@@ -243,6 +299,11 @@ server.listen({self.api_port}, () => console.log('🚀 API ready on :{self.api_p
         import time
         
         console = Console()
+        
+        # Validate project directory
+        if not self.project_root:
+            console.print("❌ TraceLens project directory not found. Please run from TraceLens directory.", style="red")
+            return False
         
         # Welcome screen
         console.print(Panel.fit(
